@@ -1,0 +1,5 @@
+<p>dashboard works!</p>
+<ul>
+    <li *ngFor="let device of devices">{{ device.friendly_name }}</li>
+</ul>
+<button [routerLink]="['/logout']">Logout</button>
