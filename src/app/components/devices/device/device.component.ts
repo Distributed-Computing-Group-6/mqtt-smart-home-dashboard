@@ -12,6 +12,7 @@ export class DeviceComponent {
   @Input() type: string = "";
 
   topic: string | undefined;
+  states = ['ON', 'OFF', 'Toggle'];
 
   constructor(public mqttService: MqttService) {}
 
@@ -19,16 +20,8 @@ export class DeviceComponent {
     this.topic = `${this.mqttService.getBaseTopic()}/${this.name}`;
   }
 
-    turnOn(): void {
+    stateChange(state:string): void {
       const stateTopic:string = `${this.topic}/set/state`;
-      this.mqttService.publish(stateTopic,'on');
-    }
-    turnOff(): void {
-      const stateTopic:string = `${this.topic}/set/state`;
-      this.mqttService.publish(stateTopic,'off');
-    }
-    toggle(): void {
-      const stateTopic:string = `${this.topic}/set/state`;
-      this.mqttService.publish(stateTopic,'toggle');
+      this.mqttService.publish(stateTopic,state);
     }
 }
