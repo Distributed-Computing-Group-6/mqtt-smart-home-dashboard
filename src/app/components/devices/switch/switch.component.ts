@@ -3,16 +3,16 @@ import { DeviceComponent } from '../device/device.component';
 import { MqttService } from '../../../services/mqtt.service';
 
 @Component({
-  selector: 'app-light',
-  templateUrl: './light.component.html',
-  styleUrl: './light.component.css'
+  selector: 'app-switch',
+  templateUrl: './switch.component.html',
+  styleUrl: './switch.component.css'
 })
-export class LightComponent extends DeviceComponent {
+export class SwitchComponent extends DeviceComponent {
   override type: string;
 
   constructor(mqttService: MqttService) { 
     super(mqttService);
-    this.type = "light";
+    this.type = "switch";
   }
 
 }

@@ -8,6 +8,8 @@ import { LightComponent } from './components/devices/light/light.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { SwitchComponent } from './components/devices/switch/switch.component';
+import { DeviceComponent } from './components/devices/device/device.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +18,8 @@ import { LogoutComponent } from './components/logout/logout.component';
     LoginComponent,
     DashboardComponent,
     LogoutComponent,
+    SwitchComponent,
+    DeviceComponent,
   ],
   imports: [
     BrowserModule,

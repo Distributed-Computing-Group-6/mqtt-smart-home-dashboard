@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 export class MqttService {
   private client!: mqtt.MqttClient;
   private mqttUrl = 'wss://t5c7dc17.ala.us-east-1.emqxsl.com:8084/mqtt';
-  private baseTopic : String = "";
+  private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private devices: any[] = [];
 
@@ -85,7 +85,7 @@ export class MqttService {
     return this.devicesSubject.asObservable();
   }
     
-  public getBaseTopic() {
+  public getBaseTopic():string {
     return this.baseTopic;
   }
 

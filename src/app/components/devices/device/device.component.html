@@ -1,1 +1,14 @@
-<p>device works!</p>
+<ng-container [ngSwitch]="this.type">
+    <p>{{name}}</p>
+    <ng-container *ngSwitchCase="'switch'">
+      <app-switch [name]="this.name" [features]="this.features" [type]="this.type"></app-switch>
+    </ng-container>
+  
+    <ng-container *ngSwitchCase="'light'">
+      <app-light [name]="this.name" [features]="this.features" [type]="this.type"></app-light>
+    </ng-container>
+  
+    <ng-container *ngSwitchDefault>
+    </ng-container>
+    
+</ng-container>
