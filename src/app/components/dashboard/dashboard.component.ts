@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.mqttService.subscribeToDevices();
     this.mqttService.getDevices().subscribe(devices => {
-      this.devices = devices.map((device: { friendly_name: string, definition?: { exposes: any[] } }) => {
+      this.devices = devices.map((device: { friendly_name: string, definition?: { exposes: any[]} }) => {
         const exposes = device.definition?.exposes || [];
         const features = exposes.flatMap(expose => expose.features || []);
         const type = exposes.length > 0 ? exposes[0].type : null; 
@@ -22,7 +22,8 @@ export class DashboardComponent implements OnInit {
         return {
           friendly_name: device.friendly_name,
           features: features,
-          type: type
+          type: type,
+          exposes: exposes.slice(1)
         };
       });
       console.log(this.devices);

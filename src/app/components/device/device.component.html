@@ -1,0 +1,20 @@
+<p>{{name}}</p>
+<ng-container *ngFor="let feature of features" [ngSwitch]="feature.type">
+    <ng-container *ngSwitchCase="'binary'">
+      <p>{{feature.label}}</p>
+      <app-state [topic]="topic"></app-state>
+    </ng-container>
+  
+    <ng-container *ngSwitchCase="'numeric'" >
+      <ng-container *ngIf="feature.name!='color_temp_startup'">
+        <p>{{feature.label}}</p>
+        <app-slider  
+          [topic]="topic" [min]="feature.type.value_min" [max]="feature.type.value_max">
+        </app-slider>
+      </ng-container>
+    </ng-container>
+  
+    <ng-container *ngSwitchDefault>
+    </ng-container>
+    
+</ng-container>
