@@ -1,0 +1,15 @@
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <ng-container *ngFor="let value of feature.values">
+        <label class="btn btn-secondary" [class.active]="inputValue === value">
+            <input 
+            type="radio" 
+            name="values" 
+            [id]="value" 
+            [value]="value" 
+            [(ngModel)]="inputValue" 
+            autocomplete="off"
+            (change)="stateChange()"
+            [disabled]="(!canWrite())"> {{ value }}
+        </label>
+    </ng-container>
+</div>
