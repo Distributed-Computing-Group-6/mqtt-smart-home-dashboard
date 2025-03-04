@@ -5,6 +5,6 @@
       id="toggleSwitch" 
       [(ngModel)]="inputValue"
       (change)="stateChange()"
-      [disabled]="(!canWrite())">{{this.inputValue ? this.feature.value_on : this.feature.value_off}}
+      [disabled]="(!canWrite())">{{this.inputValue ? this.control.value_on : this.control.value_off}}
   </div>
   

@@ -70,6 +70,7 @@ export class MqttService {
 
   public subscribeToDevices(): void {
     const topic = `${this.baseTopic}/bridge/devices`;
+    // const topic = `zigbee2mqtt/josh/bridge/devices`;
   
     this.subscribe(topic);
 

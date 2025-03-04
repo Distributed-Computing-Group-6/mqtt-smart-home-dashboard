@@ -17,14 +17,16 @@ export class DashboardComponent implements OnInit {
       this.devices = devices.map((device: { friendly_name: string, definition?: { exposes: any[]} }) => {
         const exposes = device.definition?.exposes || [];
         const features = exposes?.flatMap(expose => expose.features || []);
-        const controls = features.length > 0 ? features : exposes.slice(0, 1) || [];        
+        const controls = features.length > 0 
+                ? features 
+                : exposes.filter(e => !e.category) || [];      
         const type = exposes.length > 0 ? exposes[0].type : null; 
 
         return {
           friendly_name: device.friendly_name,
-          features: controls,
+          controls: controls,
           type: type,
-          exposes: exposes.slice(1)
+          exposes: exposes.filter(e => e.category)
         };
       });
       console.log(this.devices);

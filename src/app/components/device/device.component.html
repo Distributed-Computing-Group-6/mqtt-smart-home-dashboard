@@ -1,20 +1,23 @@
-<p>{{name}}</p>
-<ng-container *ngFor="let feature of features" [ngSwitch]="feature.type">
-    <ng-container *ngSwitchCase="'binary'">
-      <p>{{feature.label}}</p>
-      <app-binary [topic]="topic" [feature]="feature"></app-binary>
-    </ng-container>
-  
-    <ng-container *ngSwitchCase="'numeric'" >
-      <ng-container *ngIf="feature.name!='color_temp_startup'">
-        <p>{{feature.label}}</p>
-        <app-numeric  
-          [topic]="topic" [feature]="feature">
-        </app-numeric>
+
+<ng-container *ngIf="controls.length > 0">
+  <p>{{name}}</p>
+  <ng-container *ngFor="let control of controls" [ngSwitch]="control.type">
+      <ng-container *ngSwitchCase="'binary'">
+        <p>{{control.label}}</p>
+        <app-binary [topic]="topic" [control]="control"></app-binary>
       </ng-container>
-    </ng-container>
-  
-    <ng-container *ngSwitchDefault>
-    </ng-container>
     
+      <ng-container *ngSwitchCase="'numeric'" >
+        <ng-container *ngIf="control.name!='color_temp_startup'">
+          <p>{{control.label}}</p>
+          <app-numeric  
+            [topic]="topic" [control]="control">
+          </app-numeric>
+        </ng-container>
+      </ng-container>
+    
+      <ng-container *ngSwitchDefault>
+      </ng-container>
+      
+  </ng-container>
 </ng-container>
