@@ -3,8 +3,8 @@
       class="form-check-input" 
       type="checkbox" 
       id="toggleSwitch" 
-      [(ngModel)]="isToggled"
+      [(ngModel)]="inputValue"
       (change)="stateChange()"
-      [disabled]="(!canWrite())">{{this.isToggled ? this.feature.value_on : this.feature.value_off}}
+      [disabled]="(!canWrite())">{{this.inputValue ? this.feature.value_on : this.feature.value_off}}
   </div>
   

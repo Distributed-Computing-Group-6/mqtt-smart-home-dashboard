@@ -44,7 +44,11 @@ export abstract class BaseComponent implements OnInit{
         }
     }
 
-    handleChange(value:any) {}
+    stateChange(): void {}
 
-    startState() {}
+    handleChange(value:any): void {
+        this.inputValue = value;
+    }
+
+    startState(): void {}
 }

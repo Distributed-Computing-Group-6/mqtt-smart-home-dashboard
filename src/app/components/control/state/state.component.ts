@@ -7,22 +7,21 @@ import { BaseComponent } from '../base/base.component';
   styleUrl: './state.component.css'
 })
 export class StateComponent extends BaseComponent{
-  isToggled: boolean = false;
 
-  stateChange(): void {
-    let state = this.isToggled ? this.feature.value_on : this.feature.value_off;
-    const stateTopic:string = `${this.topic}/set/${this.feature.name}`;
+  override stateChange(): void {
+    let state = this.inputValue ? this.feature.value_on : this.feature.value_off;
+    const stateTopic:string = `${this.topic}/set/${this.feature.property}`;
     this.mqttService.publish(stateTopic,state);
   }
   
-  override handleChange(value:any) {
-    this.isToggled = value == this.feature.value_on;
+  override handleChange(value:any): void {
+    this.inputValue = value == this.feature.value_on;
   }
   
-  override startState() {
+  override startState(): void {
     const saveState = JSON.parse(localStorage.getItem(this.topic)!)
     const property = this.feature.property;
 
-    this.isToggled = saveState && saveState[property] === this.feature.value_on ? true : false;
+    this.inputValue = saveState && saveState[property] === this.feature.value_on ? true : false;
   }
 }
