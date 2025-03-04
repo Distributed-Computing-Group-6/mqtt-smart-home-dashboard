@@ -125,5 +125,20 @@ export class MqttService {
       }
     });
   }
+
+  public getUpdate(topic: string, type: string, callback: (data: any) => void): void {
+    this.client.subscribe(topic);
   
+    this.client.on('message', (receivedTopic, message) => {
+      if(topic===receivedTopic){
+        const data = JSON.parse(message.toString());
+        this.saveStates(data, topic);
+        callback(data[type]);
+      }
+    });
+  }
+
+  private saveStates(data:any, name:string){
+      localStorage.setItem(name, JSON.stringify(data));
+  }
 }

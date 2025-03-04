@@ -4,6 +4,7 @@
       type="checkbox" 
       id="toggleSwitch" 
       [(ngModel)]="isToggled"
-      (click)="stateChange()">
+      (change)="stateChange()"
+      [disabled]="(!canWrite())">{{this.isToggled ? this.feature.value_on : this.feature.value_off}}
   </div>
   

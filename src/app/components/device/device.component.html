@@ -2,14 +2,14 @@
 <ng-container *ngFor="let feature of features" [ngSwitch]="feature.type">
     <ng-container *ngSwitchCase="'binary'">
       <p>{{feature.label}}</p>
-      <app-state [topic]="topic"></app-state>
+      <app-state [topic]="topic" [feature]="feature"></app-state>
     </ng-container>
   
     <ng-container *ngSwitchCase="'numeric'" >
       <ng-container *ngIf="feature.name!='color_temp_startup'">
         <p>{{feature.label}}</p>
         <app-slider  
-          [topic]="topic" [min]="feature.type.value_min" [max]="feature.type.value_max">
+          [topic]="topic" [feature]="feature">
         </app-slider>
       </ng-container>
     </ng-container>
