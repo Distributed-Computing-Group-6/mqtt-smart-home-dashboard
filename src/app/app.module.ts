@@ -8,8 +8,9 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { DeviceComponent } from './components/device/device.component';
-import { StateComponent } from './components/control/state/state.component';
-import { SliderComponent } from './components/control/slider/slider.component';
+import { BinaryComponent } from './components/control/binary/binary.component';
+import { NumericComponent } from './components/control/numeric/numeric.component';
+import { EnumComponent } from './components/control/enum/enum.component';
 
 @NgModule({
   declarations: [
@@ -18,8 +19,9 @@ import { SliderComponent } from './components/control/slider/slider.component';
     DashboardComponent,
     LogoutComponent,
     DeviceComponent,
-    StateComponent,
-    SliderComponent,
+    BinaryComponent,
+    NumericComponent,
+    EnumComponent
   ],
   imports: [
     BrowserModule,

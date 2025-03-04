@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MqttService } from '../../../services/mqtt.service';
 
 @Component({
-  selector: 'app-base',
-  templateUrl: './base.component.html',
-  styleUrl: './base.component.css'
-})
-export abstract class BaseComponent implements OnInit{
+    selector: 'app-basic-expose',
+    templateUrl: './basic-expose.component.html',
+    styleUrl: './basic-expose.component.css'
+  })
+export abstract class BasicExposeComponent implements OnInit{
     @Input() topic!: string;
     @Input() feature!: any;
     accessArray!: string[];

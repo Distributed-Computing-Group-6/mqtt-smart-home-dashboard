@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { BaseComponent } from '../base/base.component';
+import { Component } from '@angular/core';
+import { BasicExposeComponent } from '../basic-expose/basic-expose.component';
 
 @Component({
-  selector: 'app-state',
-  templateUrl: './state.component.html',
-  styleUrl: './state.component.css'
+  selector: 'app-binary',
+  templateUrl: './binary.component.html',
+  styleUrl: './binary.component.css'
 })
-export class StateComponent extends BaseComponent{
+export class BinaryComponent extends BasicExposeComponent{
 
   override stateChange(): void {
     let state = this.inputValue ? this.feature.value_on : this.feature.value_off;
