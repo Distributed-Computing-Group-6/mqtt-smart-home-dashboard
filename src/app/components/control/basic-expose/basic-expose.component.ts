@@ -8,7 +8,7 @@ import { MqttService } from '../../../services/mqtt.service';
   })
 export abstract class BasicExposeComponent implements OnInit{
     @Input() topic!: string;
-    @Input() feature!: any;
+    @Input() control!: any;
     accessArray!: string[];
     inputValue: any;
 
@@ -21,7 +21,7 @@ export abstract class BasicExposeComponent implements OnInit{
     }
 
     getAccess(): string[] {
-        return this.feature.access.toString(2).split("");
+        return this.control.access.toString(2).split("");
     }
     
     canRead(): boolean {
@@ -38,7 +38,7 @@ export abstract class BasicExposeComponent implements OnInit{
 
     listenForChange(){
         if(this.canPublish()){
-            this.mqttService.getUpdate(this.topic, this.feature.name, (value) => {
+            this.mqttService.getUpdate(this.topic, this.control.name, (value) => {
                 this.handleChange(value);
               });
         }

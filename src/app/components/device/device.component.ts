@@ -8,7 +8,7 @@ import { MqttService } from '../../services/mqtt.service';
 })
 export class DeviceComponent {
   @Input() name: string = "";
-  @Input() features: any[] = [];
+  @Input() controls: any[] = [];
   @Input() type: string = "";
 
   topic!: string;

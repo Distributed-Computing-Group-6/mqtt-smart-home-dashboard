@@ -10,13 +10,13 @@ export class EnumComponent extends BasicExposeComponent {
 
   override stateChange(): void {
     let state = this.inputValue;
-    const stateTopic:string = `${this.topic}/set/${this.feature.property}`;
+    const stateTopic:string = `${this.topic}/set/${this.control.property}`;
     this.mqttService.publish(stateTopic,state);
   }
   
   override startState(): void {
     const saveState = JSON.parse(localStorage.getItem(this.topic)!)
-    const property = this.feature.property;
+    const property = this.control.property;
 
     this.inputValue = saveState && saveState[property] ? saveState[property] : false;
   }
