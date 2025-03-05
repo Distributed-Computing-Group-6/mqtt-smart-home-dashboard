@@ -12,6 +12,9 @@ import { BinaryComponent } from './components/control/binary/binary.component';
 import { NumericComponent } from './components/control/numeric/numeric.component';
 import { EnumComponent } from './components/control/enum/enum.component';
 import { BasicExposeComponent } from './components/control/basic-expose/basic-expose.component';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { MainComponent } from './components/main/main.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import { BasicExposeComponent } from './components/control/basic-expose/basic-ex
     BasicExposeComponent,
     BinaryComponent,
     NumericComponent,
-    EnumComponent
+    EnumComponent,
+    HeaderComponent,
+    FooterComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
