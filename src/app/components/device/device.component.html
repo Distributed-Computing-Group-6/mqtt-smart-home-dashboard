@@ -1,33 +1,24 @@
-<div class="card text-center clean-card w-100 h-100 d-flex flex-column">
 
-  <div class="card-header">
+  <div class="flex-fill card flex-shrink-1">
+    <div class="card-header pb-0 d-flex justify-content-between">
     <h4 class="card-title">{{ name }}</h4>
   </div>
-  
-  <div class="card-body info d-flex flex-column justify-content-center">
-
-    <div class="row justify-content-center align-items-center">
+    <div class="row card-body justify-content-center">
       <ng-container *ngFor="let control of controls" [ngSwitch]="control.type">
         
         <ng-container *ngSwitchCase="'binary'">
-          <div class="col-sm-4 d-flex justify-content-center align-items-center pt-3">
             <app-binary [topic]="topic" [control]="control"></app-binary>
-          </div>
         </ng-container>
 
         <ng-container *ngSwitchCase="'numeric'">
           <ng-container *ngIf="control.name !== 'color_temp_startup'">
-            <div class="col-sm-4 d-flex justify-content-center align-items-center pt-3 w-100">
               <app-numeric [topic]="topic" [control]="control"></app-numeric>
-            </div>
           </ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'enum'">
           <ng-container *ngIf="control.name !== 'color_temp_startup'">
-            <div class="col-sm-4 d-flex justify-content-center align-items-center pt-3">
               <app-enum [topic]="topic" [control]="control"></app-enum>
-            </div>
           </ng-container>
         </ng-container>
 
@@ -36,4 +27,3 @@
       </ng-container>
     </div>
   </div>
-</div>

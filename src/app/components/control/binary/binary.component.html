@@ -1,11 +1,15 @@
-<div class="form-check form-switch form-switch-lg">
-    <input 
-      class="form-check-input" 
-      type="checkbox" 
-      [id]="topic + 'ToggleSwitch'"
-      [(ngModel)]="inputValue"
-      (change)="stateChange()"
-      [disabled]="(!canWrite())"><!--{{this.inputValue ? this.control.value_on : this.control.value_off}}-->
-    <label class="form-check-label" [for]="topic + 'ToggleSwitch'">{{control.label}}</label>
+<div class="d-flex align-items-center">
+  <div class="flex-shrink-1 flex-grow-1">{{control.label}}</div>
+  <div class="flex-shrink-1">
+    <div class="form-check form-switch">
+      <input 
+        class="form-check-input" 
+        type="checkbox" 
+        [id]="topic + 'ToggleSwitch'"
+        [(ngModel)]="inputValue"
+        (change)="stateChange()"
+        [disabled]="(!canWrite())"><!--{{this.inputValue ? this.control.value_on : this.control.value_off}}-->
+    </div>
   </div>
+</div>
   

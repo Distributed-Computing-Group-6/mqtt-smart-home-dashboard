@@ -1,6 +1,5 @@
-.row .card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
+.card-header {
+  background-color: white;
+  border: none;
+}
   
