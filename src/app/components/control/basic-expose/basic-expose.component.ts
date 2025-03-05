@@ -6,7 +6,7 @@ import { MqttService } from '../../../services/mqtt.service';
     templateUrl: './basic-expose.component.html',
     styleUrl: './basic-expose.component.css'
   })
-export abstract class BasicExposeComponent implements OnInit{
+export class BasicExposeComponent implements OnInit{
     @Input() topic!: string;
     @Input() control!: any;
     accessArray!: string[];

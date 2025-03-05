@@ -11,6 +11,7 @@ import { DeviceComponent } from './components/device/device.component';
 import { BinaryComponent } from './components/control/binary/binary.component';
 import { NumericComponent } from './components/control/numeric/numeric.component';
 import { EnumComponent } from './components/control/enum/enum.component';
+import { BasicExposeComponent } from './components/control/basic-expose/basic-expose.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { EnumComponent } from './components/control/enum/enum.component';
     DashboardComponent,
     LogoutComponent,
     DeviceComponent,
+    BasicExposeComponent,
     BinaryComponent,
     NumericComponent,
     EnumComponent
