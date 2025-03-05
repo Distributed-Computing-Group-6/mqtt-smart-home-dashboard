@@ -10,6 +10,7 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { DeviceComponent } from './components/device/device.component';
 import { BinaryComponent } from './components/control/binary/binary.component';
 import { NumericComponent } from './components/control/numeric/numeric.component';
+import { EnumComponent } from './components/control/enum/enum.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { NumericComponent } from './components/control/numeric/numeric.component
     LogoutComponent,
     DeviceComponent,
     BinaryComponent,
-    NumericComponent
+    NumericComponent,
+    EnumComponent
   ],
   imports: [
     BrowserModule,
