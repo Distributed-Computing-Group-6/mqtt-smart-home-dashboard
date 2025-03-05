@@ -1,19 +1,17 @@
-<app-basic-expose [control]="control">
-  <div class="form-check form-switch form-switch-lg">
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <ng-container *ngFor="let value of control.values">
-            <label class="btn btn-secondary" [class.active]="inputValue === value">
-                <input 
-                type="radio" 
-                name="values" 
-                [id]="value" 
-                [value]="value" 
-                [(ngModel)]="inputValue" 
-                autocomplete="off"
-                (change)="stateChange()"
-                [disabled]="(!canWrite())"> {{ value }}
-            </label>
-        </ng-container>
+<app-basic-expose [topic]="topic" [control]="control">
+  <div class="dropdown">
+    <button 
+      type="button" 
+      class="btn btn-secondary dropdown-toggle" 
+      data-bs-toggle="dropdown" 
+      aria-haspopup="true" 
+      aria-expanded="false">
+      {{ inputValue || 'Select' }}
+    </button>
+    <div class="dropdown-menu">
+      <ng-container *ngFor="let value of control.values">
+        <a class="dropdown-item" href="#" (click)="setValue(value)">{{ value }}</a>
+      </ng-container>
     </div>
   </div>
 </app-basic-expose>

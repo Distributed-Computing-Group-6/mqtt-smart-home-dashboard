@@ -20,5 +20,8 @@ export class EnumComponent extends BasicExposeComponent {
 
     this.inputValue = saveState && saveState[property] ? saveState[property] : false;
   }
+  setValue(value:string):void {
+    this.inputValue=value;
+  }
 
 }
