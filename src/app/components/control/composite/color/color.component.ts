@@ -17,7 +17,6 @@ export class ColorComponent extends BasicExposeComponent{
     } else {
       state = null;
     }
-    console.log(state);
     this.mqttService.publish(stateTopic,state);
   }
   
