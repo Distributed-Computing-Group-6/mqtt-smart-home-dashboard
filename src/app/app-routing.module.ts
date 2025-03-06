@@ -4,6 +4,7 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { authGuard } from './guard/auth.guard';
 import { LogoutComponent } from './components/logout/logout.component';
+import { MainComponent } from './components/main/main.component';
 
 const routes: Routes = [
   {
@@ -16,9 +17,15 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: DashboardComponent,
-    canActivate: [authGuard]
-  },
+    component: MainComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: DashboardComponent,
+      }
+    ]
+  }
 ];
 
 @NgModule({

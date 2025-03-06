@@ -18,7 +18,14 @@ export class EnumComponent extends BasicExposeComponent {
     const saveState = JSON.parse(localStorage.getItem(this.topic)!)
     const property = this.control.property;
 
-    this.inputValue = saveState && saveState[property] ? saveState[property] : false;
+    this.inputValue = saveState && saveState[property] ? saveState[property] : this.control.values[0];
+  }
+
+  setValue(value:string):void {
+    if(this.canWrite()){
+      this.inputValue=value;
+      this.stateChange();
+    }
   }
 
 }

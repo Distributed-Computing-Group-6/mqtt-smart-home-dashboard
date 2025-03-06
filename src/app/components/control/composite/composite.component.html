@@ -1,0 +1,39 @@
+
+<div class="card">
+  <div class="card-header" (click)="isCollapsed = !isCollapsed">
+    {{ control.label }}
+  </div>
+
+  <div class="collapse" [ngClass]="{'show': !isCollapsed}">
+    <div class="card-body">    
+    <ng-container *ngFor="let control of control.features" [ngSwitch]="control.type">
+      
+      <ng-container *ngSwitchCase="'binary'">
+          <app-binary [topic]="topic" [control]="control"></app-binary>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'numeric'">
+        <ng-container *ngIf="control.name !== 'color_temp_startup'">
+            <app-numeric [topic]="topic" [control]="control"></app-numeric>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'enum'">
+            <app-enum [topic]="topic" [control]="control"></app-enum>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'composite'">
+        <ng-container *ngIf="control.name == 'color_xy'; else elseTemplate">
+          <app-color [topic]="topic" [control]="control"></app-color>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <app-composite [topic]="topic" [control]="control"></app-composite>
+        </ng-template>
+      </ng-container>
+
+      <ng-container *ngSwitchDefault></ng-container>
+
+    </ng-container>
+  </div>
+  </div>
+</div>

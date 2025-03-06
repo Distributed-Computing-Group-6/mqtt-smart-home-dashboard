@@ -6,7 +6,7 @@ import { MqttService } from '../../../services/mqtt.service';
     templateUrl: './basic-expose.component.html',
     styleUrl: './basic-expose.component.css'
   })
-export abstract class BasicExposeComponent implements OnInit{
+export class BasicExposeComponent implements OnInit{
     @Input() topic!: string;
     @Input() control!: any;
     accessArray!: string[];
@@ -21,11 +21,11 @@ export abstract class BasicExposeComponent implements OnInit{
     }
 
     getAccess(): string[] {
-        return this.control.access.toString(2).split("");
+        return this.control.access.toString(2).padStart(3, "0").split("");
     }
     
     canRead(): boolean {
-        return this.getAccess()[2]=="1";
+        return this.getAccess()[0]=="1";
     }
     
     canWrite(): boolean {
@@ -33,7 +33,7 @@ export abstract class BasicExposeComponent implements OnInit{
     }
     
     canPublish(): boolean {
-        return this.getAccess()[0]=="1";
+        return this.getAccess()[2]=="1";
     }
 
     listenForChange(){
