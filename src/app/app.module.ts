@@ -15,6 +15,8 @@ import { BasicExposeComponent } from './components/control/basic-expose/basic-ex
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MainComponent } from './components/main/main.component';
+import { ColorComponent } from './components/control/composite/color/color.component';
+import { CompositeComponent } from './components/control/composite/composite.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { MainComponent } from './components/main/main.component';
     EnumComponent,
     HeaderComponent,
     FooterComponent,
-    MainComponent
+    MainComponent,
+    ColorComponent,
+    CompositeComponent
   ],
   imports: [
     BrowserModule,

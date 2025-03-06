@@ -1,5 +1,6 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, TemplateRef } from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
+import { NgIfContext } from '@angular/common';
 
 @Component({
   selector: 'app-device',
@@ -12,6 +13,7 @@ export class DeviceComponent {
   @Input() type: string = "";
 
   topic!: string;
+  elseTemplate!: TemplateRef<NgIfContext<boolean>> | null ;
 
   constructor(public mqttService: MqttService) {}
 

@@ -17,13 +17,21 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'enum'">
-          <ng-container *ngIf="control.name !== 'color_temp_startup'">
               <app-enum [topic]="topic" [control]="control"></app-enum>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'composite'">
+          <ng-container *ngIf="control.name == 'color_xy'; else elseTemplate">
+            <app-color [topic]="topic" [control]="control"></app-color>
           </ng-container>
+          <ng-template #elseTemplate>
+            <app-composite [topic]="topic" [control]="control" class="pb-2"></app-composite>
+          </ng-template>
         </ng-container>
 
         <ng-container *ngSwitchDefault></ng-container>
 
       </ng-container>
+      
     </div>
   </div>

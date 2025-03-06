@@ -2,16 +2,19 @@
   <div class="dropdown">
     <button 
       type="button" 
-      class="btn btn-secondary dropdown-toggle" 
+      class="btn btn-secondary" 
+      [ngClass]="{'dropdown-toggle': canWrite()}"
       data-bs-toggle="dropdown" 
       aria-haspopup="true" 
       aria-expanded="false">
-      {{ inputValue || 'Select' }}
+      {{ inputValue || inputValue }}
     </button>
-    <div class="dropdown-menu">
-      <ng-container *ngFor="let value of control.values">
-        <a class="dropdown-item" href="#" (click)="setValue(value)">{{ value }}</a>
-      </ng-container>
-    </div>
+    <ng-container *ngIf="canWrite()s">
+      <div class="dropdown-menu">
+        <ng-container *ngFor="let value of control.values">
+          <a class="dropdown-item" (click)="setValue(value)">{{ value }}</a>
+        </ng-container>
+      </div>
+    </ng-container>
   </div>
 </app-basic-expose>

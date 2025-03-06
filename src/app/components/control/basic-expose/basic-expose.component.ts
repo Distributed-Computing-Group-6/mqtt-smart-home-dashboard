@@ -21,11 +21,11 @@ export class BasicExposeComponent implements OnInit{
     }
 
     getAccess(): string[] {
-        return this.control.access.toString(2).split("");
+        return this.control.access.toString(2).padStart(3, "0").split("");
     }
     
     canRead(): boolean {
-        return this.getAccess()[2]=="1";
+        return this.getAccess()[1]=="1";
     }
     
     canWrite(): boolean {
@@ -33,7 +33,7 @@ export class BasicExposeComponent implements OnInit{
     }
     
     canPublish(): boolean {
-        return this.getAccess()[0]=="1";
+        return this.getAccess()[2]=="1";
     }
 
     listenForChange(){
