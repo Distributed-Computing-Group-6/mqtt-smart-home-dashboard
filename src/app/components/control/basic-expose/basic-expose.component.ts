@@ -25,7 +25,7 @@ export class BasicExposeComponent implements OnInit{
     }
     
     canRead(): boolean {
-        return this.getAccess()[1]=="1";
+        return this.getAccess()[0]=="1";
     }
     
     canWrite(): boolean {
