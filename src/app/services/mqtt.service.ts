@@ -139,14 +139,16 @@ export class MqttService {
   private handleMessage(receivedTopic: string, message: Buffer): void { 
     try {
       const parsedMessage = JSON.parse(message.toString());
-      console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      // console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
 
       if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
         this.devicesSubject.next(parsedMessage);
       }
   
-      if (this.topicCallbackMap[receivedTopic]) {
-        this.topicCallbackMap[receivedTopic].forEach(({ property, callback }) => {
+      const topicCallbacks = this.topicCallbackMap[receivedTopic];
+
+      if (topicCallbacks) {
+        topicCallbacks.forEach(({ property, callback }) => {
           const data = parsedMessage;
           this.saveStates(data, receivedTopic);
           callback(data[property]);
