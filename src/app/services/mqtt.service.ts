@@ -13,7 +13,7 @@ export class MqttService {
   private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private topicSubscriptions: Set<string> = new Set();
-  private topicCallbackMap: { [key: string]: { property: string, callback: Function } } = {};
+  private topicCallbackMap: { [key: string]: { property: string, callback: Function }[] } = {};
 
   constructor(private router: Router) {
     this.checkStoredCredentials();
@@ -146,12 +146,12 @@ export class MqttService {
       }
   
       if (this.topicCallbackMap[receivedTopic]) {
-        const { property, callback } = this.topicCallbackMap[receivedTopic];
-        const data = parsedMessage;
-        this.saveStates(data, receivedTopic);
-        callback(data[property]);
+        this.topicCallbackMap[receivedTopic].forEach(({ property, callback }) => {
+          const data = parsedMessage;
+          this.saveStates(data, receivedTopic);
+          callback(data[property]);
+        });
       }
-  
     } catch (error) {
       console.error(`Failed to parse message from topic ${receivedTopic}:`, error);
     }
@@ -159,8 +159,12 @@ export class MqttService {
   
   public getUpdate(topic: string, property: string, callback: (data: any) => void): void {
     this.subscribe(topic);
+
+    if (!this.topicCallbackMap[topic]) {
+      this.topicCallbackMap[topic] = [];
+    }
   
-    this.topicCallbackMap[topic] = { property, callback };
+    this.topicCallbackMap[topic].push({ property, callback });
   }
 
   private saveStates(data:any, name:string){
