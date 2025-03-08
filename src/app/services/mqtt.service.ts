@@ -38,11 +38,11 @@ export class MqttService {
   }
 
   private initializeMessageListener() {
-    if (!this.client.listenerCount('message')) {
+    // if (!this.client.listenerCount('message')) {
       this.client.on('message', (receivedTopic, message) => {
         this.handleMessage(receivedTopic, message);
       });
-    }
+    // }
   }  
 
   public connectToBroker(username: string, password: string): Promise<boolean> {
