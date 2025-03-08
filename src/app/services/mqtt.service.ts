@@ -17,7 +17,6 @@ export class MqttService {
 
   constructor(private router: Router) {
     this.checkStoredCredentials();
-    this.initializeMessageListener();
   }
 
   private checkStoredCredentials() {
@@ -30,6 +29,7 @@ export class MqttService {
         if (isConnected) {
           this.router.navigate(['/']);
           console.log('Reconnected to MQTT broker automatically.');
+          this.initializeMessageListener();
         }
       }).catch(error => {
         console.error('Failed to reconnect automatically:', error);
@@ -38,11 +38,11 @@ export class MqttService {
   }
 
   private initializeMessageListener() {
-    // if (!this.client.listenerCount('message')) {
+    if (!this.client.listenerCount('message')) {
       this.client.on('message', (receivedTopic, message) => {
         this.handleMessage(receivedTopic, message);
       });
-    // }
+    }
   }  
 
   public connectToBroker(username: string, password: string): Promise<boolean> {
@@ -58,6 +58,8 @@ export class MqttService {
   
       this.client.on('connect', () => {
         console.log('Connected to MQTT broker');
+        
+        this.initializeMessageListener();
         resolve(true);
       });
   
@@ -139,7 +141,7 @@ export class MqttService {
   private handleMessage(receivedTopic: string, message: Buffer): void { 
     try {
       const parsedMessage = JSON.parse(message.toString());
-      // console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
 
       if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
         this.devicesSubject.next(parsedMessage);
