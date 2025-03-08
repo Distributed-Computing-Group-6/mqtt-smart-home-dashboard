@@ -1,10 +1,10 @@
 
   <div class="flex-fill card flex-shrink-1">
     <div class="card-header pb-0 d-flex justify-content-between">
-    <h4 class="card-title">{{ name }}</h4>
+    <h4 class="card-title">{{ device.friendly_name }}</h4>
   </div>
     <div class="row card-body justify-content-center">
-      <ng-container *ngFor="let control of controls" [ngSwitch]="control.type">
+      <ng-container *ngFor="let control of device.controls" [ngSwitch]="control.type">
         
         <ng-container *ngSwitchCase="'binary'">
             <app-binary [topic]="topic" [control]="control"></app-binary>

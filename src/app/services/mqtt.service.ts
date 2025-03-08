@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import mqtt from 'mqtt';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 
 @Injectable({
@@ -12,10 +12,12 @@ export class MqttService {
   private mqttUrl = 'wss://t5c7dc17.ala.us-east-1.emqxsl.com:8084/mqtt';
   private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
-  private devices: any[] = [];
+  private topicSubscriptions: Set<string> = new Set();
+  private topicCallbackMap: { [key: string]: { property: string, callback: Function } } = {};
 
   constructor(private router: Router) {
     this.checkStoredCredentials();
+    this.initializeMessageListener();
   }
 
   private checkStoredCredentials() {
@@ -34,6 +36,14 @@ export class MqttService {
       });
     }
   }
+
+  private initializeMessageListener() {
+    if (!this.client.listenerCount('message')) {
+      this.client.on('message', (receivedTopic, message) => {
+        this.handleMessage(receivedTopic, message);
+      });
+    }
+  }  
 
   public connectToBroker(username: string, password: string): Promise<boolean> {
     console.log(username);
@@ -68,22 +78,33 @@ export class MqttService {
     return this.client && this.client.connected;
   }
 
-  public subscribeToDevices(): void {
+  public subscribeToDevices() {
     const topic = `${this.baseTopic}/bridge/devices`;
-    // const topic = `zigbee2mqtt/josh/bridge/devices`;
-  
     this.subscribe(topic);
-
-    this.handleMessages((receivedTopic, parsedMessage) => {
-      if (receivedTopic === topic) {
-        this.devices = parsedMessage;
-        this.devicesSubject.next(this.devices);
-      }
-    });
+    
+    return this.devicesSubject.asObservable();
   }
   
-  public getDevices() {
-    return this.devicesSubject.asObservable();
+  public getDevices(): Observable<any[]> {
+    return this.subscribeToDevices().pipe(
+      map(devices => {
+        return devices.map((device: { friendly_name: string, definition?: { exposes: any[] } }) => {
+          const exposes = device.definition?.exposes || [];
+          const features = exposes?.flatMap(expose => expose.features || []);
+          const controls = features.length > 0 
+            ? features 
+            : exposes.filter(e => !e.category) || [];      
+          const type = exposes.length > 0 ? exposes[0].type : null; 
+  
+          return {
+            friendly_name: device.friendly_name,
+            controls: controls,
+            type: type,
+            exposes: exposes.filter(e => e.category)
+          };
+        });
+      })
+    );
   }
     
   public getBaseTopic():string {
@@ -91,12 +112,13 @@ export class MqttService {
   }
 
   public subscribe(topic: string): void {
-    if (this.client && this.client.connected) {
+    if (this.client && this.client.connected && !this.topicSubscriptions.has(topic)) {
       this.client.subscribe(topic, (err) => {
         if (err) {
           console.error(`Subscription error for topic ${topic}`, err);
         } else {
           console.log(`Subscribed to topic: ${topic}`);
+          this.topicSubscriptions.add(topic);
         }
       });
     }
@@ -114,29 +136,31 @@ export class MqttService {
     }
   }
 
-  private handleMessages(callback: (topic: string, parsedMessage: any) => void): void {
-    this.client.on('message', (receivedTopic: string, message: Buffer) => {
-      try {
-        const parsedMessage = JSON.parse(message.toString());
-        console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
-  
-        callback(receivedTopic, parsedMessage);
-      } catch (error) {
-        console.error(`Failed to parse message from topic ${receivedTopic}:`, error);
-      }
-    });
-  }
+  private handleMessage(receivedTopic: string, message: Buffer): void { 
+    try {
+      const parsedMessage = JSON.parse(message.toString());
+      console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
 
-  public getUpdate(topic: string, type: string, callback: (data: any) => void): void {
-    this.client.subscribe(topic);
-  
-    this.client.on('message', (receivedTopic, message) => {
-      if(topic===receivedTopic){
-        const data = JSON.parse(message.toString());
-        this.saveStates(data, topic);
-        callback(data[type]);
+      if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
+        this.devicesSubject.next(parsedMessage);
       }
-    });
+  
+      if (this.topicCallbackMap[receivedTopic]) {
+        const { property, callback } = this.topicCallbackMap[receivedTopic];
+        const data = parsedMessage;
+        this.saveStates(data, receivedTopic);
+        callback(data[property]);
+      }
+  
+    } catch (error) {
+      console.error(`Failed to parse message from topic ${receivedTopic}:`, error);
+    }
+  }
+  
+  public getUpdate(topic: string, property: string, callback: (data: any) => void): void {
+    this.subscribe(topic);
+  
+    this.topicCallbackMap[topic] = { property, callback };
   }
 
   private saveStates(data:any, name:string){

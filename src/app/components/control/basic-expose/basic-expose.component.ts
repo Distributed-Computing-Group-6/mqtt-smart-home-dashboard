@@ -38,9 +38,9 @@ export class BasicExposeComponent implements OnInit{
 
     listenForChange(){
         if(this.canPublish()){
-            this.mqttService.getUpdate(this.topic, this.control.name, (value) => {
+            this.mqttService.getUpdate(this.topic, this.control.property, (value) => {
                 this.handleChange(value);
-              });
+            });
         }
     }
 

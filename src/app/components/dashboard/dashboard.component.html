@@ -3,9 +3,7 @@
     <ng-container *ngFor="let device of devices">
       <app-device class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
                   *ngIf="device.controls.length > 0"
-                  [name]="device.friendly_name"
-                  [controls]="device.controls"
-                  [type]="device.type">
+                  [device]="device">
       </app-device>
     </ng-container>          
   </div>
