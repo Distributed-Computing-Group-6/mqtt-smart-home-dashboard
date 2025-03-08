@@ -1,11 +1,15 @@
-
-<div class="card">
-  <div class="card-header" (click)="isCollapsed = !isCollapsed">
+<div class="row justify-content-between" (click)="isCollapsed = !isCollapsed">
+  <div class="col-9">
     {{ control.label }}
   </div>
+  <div class="col text-center">
+    <i [ngClass]="{'bi bi-chevron-down': !isCollapsed, 'bi bi-chevron-right': isCollapsed}"></i>
+  </div>
+</div>
 
-  <div class="collapse" [ngClass]="{'show': !isCollapsed}">
-    <div class="card-body">    
+<hr class="my-3 border-secondary">
+
+  <div class="collapse" [ngClass]="{'show': !isCollapsed}"> 
     <ng-container *ngFor="let control of control.features" [ngSwitch]="control.type">
       
       <ng-container *ngSwitchCase="'binary'">
@@ -35,5 +39,3 @@
 
     </ng-container>
   </div>
-  </div>
-</div>

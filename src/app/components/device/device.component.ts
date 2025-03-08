@@ -8,16 +8,14 @@ import { NgIfContext } from '@angular/common';
   styleUrl: './device.component.css'
 })
 export class DeviceComponent {
-  @Input() name: string = "";
-  @Input() controls: any[] = [];
-  @Input() type: string = "";
-
+  @Input() device!: any;
   topic!: string;
   elseTemplate!: TemplateRef<NgIfContext<boolean>> | null ;
 
   constructor(public mqttService: MqttService) {}
 
   ngOnInit() {
-    this.topic = `${this.mqttService.getBaseTopic()}/${this.name}`;
+    this.topic = `${this.mqttService.getBaseTopic()}/${this.device.friendly_name}`;
   }
+  
 }

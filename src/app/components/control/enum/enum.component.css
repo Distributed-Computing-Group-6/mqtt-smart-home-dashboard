@@ -3,3 +3,9 @@
   overflow: hidden;
   white-space: nowrap;
 }
+button:disabled {
+  background-color: transparent;
+  color: #6c757d;
+  border: none;
+  pointer-events: none;
+}
