@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import mqtt from 'mqtt';
 import { BehaviorSubject, map, Observable } from 'rxjs';
+import { EncryptService } from './encrypt.service';
 
 
 @Injectable({
@@ -15,24 +16,29 @@ export class MqttService {
   private topicSubscriptions: Set<string> = new Set();
   private topicCallbackMap: { [key: string]: { property: string, callback: Function } } = {};
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private encryptService: EncryptService) {
     this.checkStoredCredentials();
     this.initializeMessageListener();
   }
 
   private checkStoredCredentials() {
-    const savedUsername = localStorage.getItem('mqttUsername');
-    const savedPassword = localStorage.getItem('mqttPassword');
+    const credentials = this.encryptService.getCredentials();
 
-    if (savedUsername && savedPassword) {
-      this.connectToBroker(savedUsername, savedPassword).then(isConnected => {
-        console.log(this.isConnected());
+    if (credentials) {
+      this.connectToBroker(credentials.username, credentials.password).then(isConnected => {
         if (isConnected) {
+          console.log('Reconnected to MQTT broker.');
           this.router.navigate(['/']);
+<<<<<<< Updated upstream
           console.log('Reconnected to MQTT broker automatically.');
+=======
+          this.initializeMessageListener();
+        } else {
+          console.warn('Reconnection failed, prompting for login.');
+>>>>>>> Stashed changes
         }
       }).catch(error => {
-        console.error('Failed to reconnect automatically:', error);
+        console.error('Reconnection error:', error);
       });
     }
   }

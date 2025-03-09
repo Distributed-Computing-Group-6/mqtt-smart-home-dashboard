@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { Router } from '@angular/router';
+import { EncryptService } from '../../services/encrypt.service';
 
 @Component({
   selector: 'app-login',
@@ -11,17 +12,19 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private mqttService: MqttService, private router: Router) {}
+  constructor(private mqttService: MqttService, private router: Router, private encryptService: EncryptService) {}
   
   async onLogin() {
-    if (this.username && this.password) {
+    const _username = this.username;
+    const _password = this.password;
+
+    if (_username && _password) {
       try {
-        const isConnected = await this.mqttService.connectToBroker(this.username, this.password);
+        const isConnected = await this.mqttService.connectToBroker(_username, _password);
         if (isConnected) {
           console.log('Connected to MQTT broker:', isConnected);
   
-          localStorage.setItem('mqttUsername', this.username);
-          localStorage.setItem('mqttPassword', this.password);
+          this.encryptService.saveCredentials(_username,_password);
 
           this.router.navigate(['/']);
         } else {

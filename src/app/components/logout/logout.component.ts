@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MqttService } from '../../services/mqtt.service';
+import { EncryptService } from '../../services/encrypt.service';
 
 @Component({
   selector: 'app-logout',
@@ -9,7 +10,7 @@ import { MqttService } from '../../services/mqtt.service';
 })
 export class LogoutComponent implements OnDestroy {
 
-  constructor(private mqttService: MqttService, private router: Router) {
+  constructor(private mqttService: MqttService, private router: Router, private encryptService: EncryptService) {
     this.onLogout();
   }
 
@@ -19,8 +20,7 @@ export class LogoutComponent implements OnDestroy {
   }
 
   onLogout() {
-    localStorage.removeItem('mqttUsername');
-    localStorage.removeItem('mqttPassword')
+    this.encryptService.clearCredentials();
     this.mqttService.disconnectFromBroker();
     console.log('Logged out and disconnected from broker');
     this.router.navigate(['/login']);
