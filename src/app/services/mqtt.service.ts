@@ -29,13 +29,10 @@ export class MqttService {
         if (isConnected) {
           console.log('Reconnected to MQTT broker.');
           this.router.navigate(['/']);
-<<<<<<< Updated upstream
-          console.log('Reconnected to MQTT broker automatically.');
-=======
+          
           this.initializeMessageListener();
         } else {
           console.warn('Reconnection failed, prompting for login.');
->>>>>>> Stashed changes
         }
       }).catch(error => {
         console.error('Reconnection error:', error);
