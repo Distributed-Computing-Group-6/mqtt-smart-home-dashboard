@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import mqtt from 'mqtt';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { EncryptService } from './encrypt.service';
+import { environment } from '../environments/environment';
 
 
 @Injectable({
@@ -10,7 +11,7 @@ import { EncryptService } from './encrypt.service';
 })
 export class MqttService {
   private client!: mqtt.MqttClient;
-  private mqttUrl = 'wss://t5c7dc17.ala.us-east-1.emqxsl.com:8084/mqtt';
+  private mqttUrl = environment.mqttUrl;
   private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private topicSubscriptions: Set<string> = new Set();
@@ -18,7 +19,6 @@ export class MqttService {
 
   constructor(private router: Router, private encryptService: EncryptService) {
     this.checkStoredCredentials();
-    this.initializeMessageListener();
   }
 
   private checkStoredCredentials() {
@@ -30,7 +30,6 @@ export class MqttService {
           console.log('Reconnected to MQTT broker.');
           this.router.navigate(['/']);
           
-          this.initializeMessageListener();
         } else {
           console.warn('Reconnection failed, prompting for login.');
         }
@@ -61,6 +60,7 @@ export class MqttService {
   
       this.client.on('connect', () => {
         console.log('Connected to MQTT broker');
+        this.initializeMessageListener();
         resolve(true);
       });
   
