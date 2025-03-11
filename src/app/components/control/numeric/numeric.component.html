@@ -1,3 +1,10 @@
 <app-basic-expose [topic]="topic" [control]="control">
-    <p>numeric works!</p>
+    <div class="slider-container">
+        <label for="slider" class="label-spacing">{{ inputValue }}  </label>
+        <input type="range" id="slider"
+               [(ngModel)]="inputValue" 
+               (change)="stateChange()"
+               [min]="minValue" [max]="maxValue" step="1"
+               [disabled]="!canWrite()">
+        </div>
 </app-basic-expose>
