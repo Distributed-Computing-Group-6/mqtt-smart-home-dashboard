@@ -8,9 +8,8 @@
     height: 50px;  /* Adjust as necessary */
   }
 
-  #grad1 {
-    height: 50px;
-    width: 175px;
+  .temp_gradient {
+    border-radius: 15px;
     background-image: linear-gradient(to right, 
       rgb(173, 216, 230),  /* Light Daylight - A light blue */
       rgb(255, 255, 255),  /* White - Neutral light */

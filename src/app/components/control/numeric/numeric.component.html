@@ -1,10 +1,12 @@
 <app-basic-expose [topic]="topic" [control]="control">
     <div class="slider-container">
         <label for="slider" class="label-spacing">{{ inputValue }}  </label>
-        <input type="range" id="slider"
+        <span [ngClass]="{'temp_gradient':control.unit=='mired'}">
+            <input type="range" id="slider"
                [(ngModel)]="inputValue" 
                (change)="stateChange()"
                [min]="minValue" [max]="maxValue" step="1"
                [disabled]="!canWrite()">
-        </div>
+        </span>
+    </div>
 </app-basic-expose>
