@@ -1,8 +1,8 @@
 
   <div class="flex-fill card flex-shrink-1">
-    <div class="card-header pb-0 d-flex justify-content-between">
-    <h4 class="card-title">{{ device.friendly_name }}</h4>
-  </div>
+    <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/device', id]">
+      <h4 class="card-title">{{ device.friendly_name }}</h4>
+    </div>
     <div class="row card-body justify-content-center">
       <ng-container *ngFor="let control of device.controls" [ngSwitch]="control.type">
         

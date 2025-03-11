@@ -1,9 +1,10 @@
-<div class="container pt-5">
+<div class="container">
   <div class="row justify-content-center">
-    <ng-container *ngFor="let device of devices">
+    <ng-container *ngFor="let device of devices; let i = index">
       <app-device class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
                   *ngIf="device.controls.length > 0"
-                  [device]="device">
+                  [device]="device"
+                  [id]="i">
       </app-device>
     </ng-container>          
   </div>

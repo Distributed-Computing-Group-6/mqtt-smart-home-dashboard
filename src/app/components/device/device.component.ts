@@ -9,6 +9,7 @@ import { NgIfContext } from '@angular/common';
 })
 export class DeviceComponent {
   @Input() device!: any;
+  @Input() id!: number;
   topic!: string;
   elseTemplate!: TemplateRef<NgIfContext<boolean>> | null ;
 

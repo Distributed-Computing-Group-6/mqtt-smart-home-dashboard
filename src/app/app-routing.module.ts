@@ -5,6 +5,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { authGuard } from './guard/auth.guard';
 import { LogoutComponent } from './components/logout/logout.component';
 import { MainComponent } from './components/main/main.component';
+import { GroupsPageComponent } from './components/group/groups-page/groups-page.component';
+import { DevicePageComponent } from './components/device-page/device-page.component';
 
 const routes: Routes = [
   {
@@ -15,14 +17,27 @@ const routes: Routes = [
     path: 'logout',
     component: LogoutComponent,
   },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
     path: '',
     component: MainComponent,
     canActivate: [authGuard],
     children: [
       {
-        path: '',
+        path: 'home',
         component: DashboardComponent,
+      },
+      {
+        path: 'groups',
+        component: GroupsPageComponent,
+      },
+      {
+        path: 'groups/:groupId',
+        component: DashboardComponent,
+      },
+      {
+        path: 'device/:deviceId',
+        component: DevicePageComponent,
       }
     ]
   }

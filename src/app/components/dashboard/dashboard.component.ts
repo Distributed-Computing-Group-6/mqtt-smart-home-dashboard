@@ -12,6 +12,9 @@ export class DashboardComponent implements OnInit {
   constructor(private mqttService: MqttService){}
 
   ngOnInit(): void {
+    this.getCards();
+  }
+  getCards() {
     this.mqttService.getDevices().subscribe(devices => {
       this.devices = devices;
       // this.devices.push({

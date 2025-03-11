@@ -17,6 +17,9 @@ import { FooterComponent } from './components/footer/footer.component';
 import { MainComponent } from './components/main/main.component';
 import { ColorComponent } from './components/control/composite/color/color.component';
 import { CompositeComponent } from './components/control/composite/composite.component';
+import { DevicePageComponent } from './components/device-page/device-page.component';
+import { GroupsPageComponent } from './components/group/groups-page/groups-page.component';
+import { GroupCardComponent } from './components/group/group-card/group-card.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,10 @@ import { CompositeComponent } from './components/control/composite/composite.com
     FooterComponent,
     MainComponent,
     ColorComponent,
-    CompositeComponent
+    CompositeComponent,
+    DevicePageComponent,
+    GroupsPageComponent,
+    GroupCardComponent
   ],
   imports: [
     BrowserModule,
