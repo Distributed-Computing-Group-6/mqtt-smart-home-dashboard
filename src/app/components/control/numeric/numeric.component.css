@@ -1,0 +1,19 @@
+.label-spacing {
+    margin-right: 10px;
+  }
+
+  .gradient-slider-container {
+    position: relative;
+    width: 100%;
+    height: 50px;  /* Adjust as necessary */
+  }
+
+  #grad1 {
+    height: 50px;
+    width: 175px;
+    background-image: linear-gradient(to right, 
+      rgb(173, 216, 230),  /* Light Daylight - A light blue */
+      rgb(255, 255, 255),  /* White - Neutral light */
+      rgb(255, 153, 51)    /* Candlelight - A warm yellowish-orange */
+    );
+  }
