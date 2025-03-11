@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import mqtt from 'mqtt';
 import { BehaviorSubject, map, Observable } from 'rxjs';
+import { EncryptService } from './encrypt.service';
+import { environment } from '../environments/environment';
 
 
 @Injectable({
@@ -9,30 +11,29 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 })
 export class MqttService {
   private client!: mqtt.MqttClient;
-  private mqttUrl = 'wss://t5c7dc17.ala.us-east-1.emqxsl.com:8084/mqtt';
+  private mqttUrl = environment.mqttUrl;
   private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private topicSubscriptions: Set<string> = new Set();
   private topicCallbackMap: { [key: string]: { property: string, callback: Function }[] } = {};
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private encryptService: EncryptService) {
     this.checkStoredCredentials();
   }
 
   private checkStoredCredentials() {
-    const savedUsername = localStorage.getItem('mqttUsername');
-    const savedPassword = localStorage.getItem('mqttPassword');
+    const credentials = this.encryptService.getCredentials();
 
-    if (savedUsername && savedPassword) {
-      this.connectToBroker(savedUsername, savedPassword).then(isConnected => {
-        console.log(this.isConnected());
+    if (credentials) {
+      this.connectToBroker(credentials.username, credentials.password).then(isConnected => {
         if (isConnected) {
+          console.log('Reconnected to MQTT broker.');
           this.router.navigate(['/']);
-          console.log('Reconnected to MQTT broker automatically.');
-          this.initializeMessageListener();
+        } else {
+          console.warn('Reconnection failed, prompting for login.');
         }
       }).catch(error => {
-        console.error('Failed to reconnect automatically:', error);
+        console.error('Reconnection error:', error);
       });
     }
   }
@@ -58,7 +59,7 @@ export class MqttService {
   
       this.client.on('connect', () => {
         console.log('Connected to MQTT broker');
-        
+
         this.initializeMessageListener();
         resolve(true);
       });
