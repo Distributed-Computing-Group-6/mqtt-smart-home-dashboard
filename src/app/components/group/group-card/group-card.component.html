@@ -1,1 +1,13 @@
-<p>group-card works!</p>
+
+<div class="flex-fill card flex-shrink-1">
+    <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/groups', group.id]">
+      <h4 class="card-title">{{ group.friendly_name }}</h4>
+    </div>
+    <div class="row card-body justify-content-center">
+
+              <div *ngFor="let device of group.members">
+                <app-composite [topic]="topic" [control]="device"></app-composite>
+            </div>
+      
+    </div>
+  </div>

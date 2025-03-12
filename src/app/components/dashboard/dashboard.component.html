@@ -1,11 +1,13 @@
 <div class="container">
-  <div class="row justify-content-center">
-    <ng-container *ngFor="let device of devices; let i = index">
-      <app-device class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
-                  *ngIf="device.controls.length > 0"
-                  [device]="device"
-                  [id]="i">
-      </app-device>
-    </ng-container>          
+  <ng-container *ngIf="id!=null">
+    <button class="btn btn-secondary" [routerLink]="['/groups']"><i class="bi bi-arrow-left"></i></button>
+  </ng-container>
+  <div class="row justify-content-center pt-2">
+      <ng-container *ngFor="let device of devices; let i = index">
+        <app-device class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
+                    *ngIf="device.controls.length > 0"
+                    [device]="device">
+        </app-device>
+      </ng-container>     
   </div>
 </div>
