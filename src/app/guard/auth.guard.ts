@@ -7,7 +7,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (mqttService.isConnected()) {
-    console.log(mqttService.isConnected());
     return true;
   } else {
     router.navigate(['/login']);

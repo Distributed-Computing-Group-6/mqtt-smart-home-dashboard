@@ -21,7 +21,12 @@ export class BasicExposeComponent implements OnInit{
     }
 
     getAccess(): string[] {
-        return this.control.access.toString(2).padStart(3, "0").split("");
+        if(this.control.access){
+            return this.control.access.toString(2).padStart(3, "0").split("");
+        } else {
+            return ["0","1","0"];
+        }
+
     }
     
     canRead(): boolean {

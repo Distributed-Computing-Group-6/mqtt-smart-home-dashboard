@@ -8,4 +8,11 @@ import { BasicExposeComponent } from '../basic-expose/basic-expose.component';
 })
 export class CompositeComponent extends BasicExposeComponent {
     isCollapsed:boolean = true;
+
+    override startState(): void {
+      if(this.control.controls){
+        this.control.features = this.control.controls;
+        this.control.label = this.control.friendly_name;
+      }
+    }
 }

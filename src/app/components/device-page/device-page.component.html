@@ -1,1 +1,36 @@
-<p>device-page works!</p>
+<div class="container">
+    <button class="btn btn-secondary" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
+    <div class="row justify-content-center pt-2">
+          <app-device class="d-flex pb-3"
+                      [device]="device"
+                      [isCard]=false>
+                      <ng-container *ngFor="let control of device.exposes" [ngSwitch]="control.type">
+                        
+                        <ng-container *ngSwitchCase="'binary'">
+                            <app-binary [topic]="topic" [control]="control"></app-binary>
+                        </ng-container>
+                
+                        <ng-container *ngSwitchCase="'numeric'">
+                            <app-numeric [topic]="topic" [control]="control"></app-numeric>
+                        </ng-container>
+                
+                        <ng-container *ngSwitchCase="'enum'">
+                              <app-enum [topic]="topic" [control]="control"></app-enum>
+                        </ng-container>
+                
+                        <ng-container *ngSwitchCase="'composite'">
+                          <ng-container *ngIf="control.name == 'color_xy'; else elseTemplate">
+                            <app-color [topic]="topic" [control]="control"></app-color>
+                          </ng-container>
+                          <ng-template #elseTemplate>
+                            <app-composite [topic]="topic" [control]="control"></app-composite>
+                          </ng-template>
+                        </ng-container>
+                
+                        <ng-container *ngSwitchDefault></ng-container>
+                
+                      </ng-container>
+          </app-device> 
+    </div>
+</div>
+  

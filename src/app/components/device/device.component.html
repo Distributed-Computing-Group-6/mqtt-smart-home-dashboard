@@ -1,6 +1,6 @@
 
   <div class="flex-fill card flex-shrink-1">
-    <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/device', id]">
+    <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/device', device.ieee]">
       <h4 class="card-title">{{ device.friendly_name }}</h4>
     </div>
     <div class="row card-body justify-content-center">
@@ -11,7 +11,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'numeric'">
-          <ng-container *ngIf="control.name !== 'color_temp_startup'">
+          <ng-container *ngIf="control.name !== 'color_temp_startup' || !isCard">
               <app-numeric [topic]="topic" [control]="control"></app-numeric>
           </ng-container>
         </ng-container>
@@ -32,6 +32,8 @@
         <ng-container *ngSwitchDefault></ng-container>
 
       </ng-container>
+      
+      <ng-content></ng-content>
       
     </div>
   </div>

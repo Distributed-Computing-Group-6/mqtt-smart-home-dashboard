@@ -15,7 +15,7 @@ export class NumericComponent extends BasicExposeComponent {
     this.minValue = this.control?.value_min ?? 0;    // Default to 0 if undefined
     this.maxValue = this.control?.value_max ?? 254;    // Default to 254 if undefined
     this.inputValue = this.minValue;
-    console.log('NumericComponent initialized with control:', this.control);
+    // console.log('NumericComponent initialized with control:', this.control);
     
     if (this.control) {
       const savedState = JSON.parse(localStorage.getItem(this.topic)!);
@@ -27,9 +27,9 @@ export class NumericComponent extends BasicExposeComponent {
         this.inputValue = this.maxValue; // Default to min if no saved state
       }
 
-      console.log('Initial inputValue:', this.inputValue);
+      // console.log('Initial inputValue:', this.inputValue);
     } else {
-      console.error('Control object is undefined!');
+      // console.error('Control object is undefined!');
     }
   }
 
@@ -42,14 +42,14 @@ export class NumericComponent extends BasicExposeComponent {
         this.inputValue = Math.max(this.minValue, Math.min(this.maxValue, Number(savedState[property])));
       } 
     } else {
-      console.error('Control is not defined. Using default values.');
+      // console.error('Control is not defined. Using default values.');
     }
   }
 
   override stateChange(): void {
     const stateTopic = `${this.topic}/set/${this.control.property}`;
     this.mqttService.publish(stateTopic, this.inputValue.toString());
-    console.log('Published new value to MQTT:', this.inputValue);
+    // console.log('Published new value to MQTT:', this.inputValue);
   }
 
   getGradient(value: number): string {
