@@ -1,15 +1,25 @@
 <app-basic-expose [topic]="topic" [control]="control">
-  <div class="dropdown">
+  <div *ngIf="isCompact" class="btn-group btn-group-sm btn-group-toggle w-100" data-toggle="buttons">
+    <button 
+      *ngFor="let value of control.values" 
+      class="btn w-100" 
+      (click)="setValue(value)" 
+      [disabled]="!canWrite()" 
+      [ngClass]="{'btn-secondary': inputValue == value, 'btn-outline-secondary': inputValue != value}">
+      {{ value }}
+    </button>
+  </div>  
+  <div *ngIf="!isCompact" class="dropdown">
     <button 
       type="button" 
-      class="btn btn-secondary" 
+      class="btn btn-secondary btn-sm" 
       [ngClass]="{'dropdown-toggle': canWrite(),
       'form-control-plaintext':!canWrite()}"
       data-bs-toggle="dropdown" 
       aria-haspopup="true" 
       aria-expanded="false"
       [disabled]="!canWrite()">
-      {{ inputValue || inputValue }}
+      {{ inputValue }}
     </button>
     <ng-container *ngIf="canWrite()s">
       <div class="dropdown-menu">

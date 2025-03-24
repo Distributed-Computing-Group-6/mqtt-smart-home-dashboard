@@ -7,6 +7,7 @@ import { BasicExposeComponent } from '../basic-expose/basic-expose.component';
   styleUrl: './enum.component.css'
 })
 export class EnumComponent extends BasicExposeComponent {
+  isCompact: boolean = true;
 
   override stateChange(): void {
     let state = this.inputValue;
@@ -17,6 +18,10 @@ export class EnumComponent extends BasicExposeComponent {
   override startState(): void {
     const saveState = JSON.parse(localStorage.getItem(this.topic)!)
     const property = this.control.property;
+
+    console.log(this.control.values.length);
+
+    this.isCompact=(this.isCard&&this.control.values.length<=3)||(!this.isCard&&this.control.values.length<=5)
 
     this.inputValue = saveState && saveState[property] ? saveState[property] : this.control.values[0];
   }

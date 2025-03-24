@@ -6,7 +6,7 @@
     <div class="row card-body justify-content-center">
 
               <div *ngFor="let device of group.members">
-                <app-composite [topic]="topic" [control]="device"></app-composite>
+                <app-composite [topic]="topic" [control]="device" type="group"></app-composite>
             </div>
       
     </div>

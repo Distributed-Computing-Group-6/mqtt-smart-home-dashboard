@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BasicExposeComponent } from '../basic-expose/basic-expose.component';
 
 @Component({
@@ -8,6 +8,7 @@ import { BasicExposeComponent } from '../basic-expose/basic-expose.component';
 })
 export class CompositeComponent extends BasicExposeComponent {
     isCollapsed:boolean = true;
+    @Input() type="component"
 
     override startState(): void {
       if(this.control.controls){
