@@ -7,25 +7,25 @@
       <ng-container *ngFor="let control of device.controls" [ngSwitch]="control.type">
         
         <ng-container *ngSwitchCase="'binary'">
-            <app-binary [topic]="topic" [control]="control"></app-binary>
+            <app-binary [topic]="topic" [control]="control" [isCard]="isCard"></app-binary>
         </ng-container>
 
         <ng-container *ngSwitchCase="'numeric'">
           <ng-container *ngIf="control.name !== 'color_temp_startup' || !isCard">
-              <app-numeric [topic]="topic" [control]="control"></app-numeric>
+              <app-numeric [topic]="topic" [control]="control" [isCard]="isCard"></app-numeric>
           </ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'enum'">
-              <app-enum [topic]="topic" [control]="control"></app-enum>
+              <app-enum [topic]="topic" [control]="control" [isCard]="isCard"></app-enum>
         </ng-container>
 
         <ng-container *ngSwitchCase="'composite'">
           <ng-container *ngIf="control.name == 'color_xy'; else elseTemplate">
-            <app-color [topic]="topic" [control]="control"></app-color>
+            <app-color [topic]="topic" [control]="control" [isCard]="isCard"></app-color>
           </ng-container>
           <ng-template #elseTemplate>
-            <app-composite [topic]="topic" [control]="control"></app-composite>
+            <app-composite [topic]="topic" [control]="control" [isCard]="isCard"></app-composite>
           </ng-template>
         </ng-container>
 
