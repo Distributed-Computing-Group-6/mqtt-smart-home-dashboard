@@ -9,6 +9,7 @@ import { MqttService } from '../../../services/mqtt.service';
 export class BasicExposeComponent implements OnInit{
     @Input() topic!: string;
     @Input() control!: any;
+    @Input() isCard!: boolean;
     accessArray!: string[];
     inputValue: any;
 
