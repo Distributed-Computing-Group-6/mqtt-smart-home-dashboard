@@ -20,6 +20,7 @@ import { CompositeComponent } from './components/control/composite/composite.com
 import { DevicePageComponent } from './components/device-page/device-page.component';
 import { GroupsPageComponent } from './components/group/groups-page/groups-page.component';
 import { GroupCardComponent } from './components/group/group-card/group-card.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { GroupCardComponent } from './components/group/group-card/group-card.com
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

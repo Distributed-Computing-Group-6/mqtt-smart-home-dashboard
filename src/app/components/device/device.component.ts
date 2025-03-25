@@ -1,14 +1,16 @@
 import { Component, Inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { NgIfContext } from '@angular/common';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-device',
   templateUrl: './device.component.html',
   styleUrl: './device.component.css'
 })
-export class DeviceComponent { 
-  @ViewChild('editModalClose') editClose: any;
+export class DeviceComponent {
+  @ViewChild('renameModalContent') renameModalContent!: TemplateRef<any>;
+  @ViewChild('deleteModalContent') deleteModalContent!: TemplateRef<any>;
   @Input() device!: any;
   @Input() isCard: boolean = true;
   topic!: string;
@@ -16,8 +18,9 @@ export class DeviceComponent {
   elseTemplate!: TemplateRef<NgIfContext<boolean>> | null ;
   isInvalid: boolean = false;
   invalidMessage!: string;
+  cantRemove: boolean = false;
 
-  constructor(public mqttService: MqttService) {}
+  constructor(public mqttService: MqttService, private modalService: NgbModal) {}
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
@@ -41,16 +44,41 @@ export class DeviceComponent {
         this.isInvalid = true;
         this.invalidMessage = value.error;
       } else {
-        this.editClose.nativeElement.click();
         this.isInvalid = false;
+        this.closeModal();
       }
     });
   }
 
   deleteDevice(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/device/remove`;
-    let message = this.device.friendly_name;
+    let message = {"id": this.device.friendly_name, "force":this.cantRemove};
     console.log(message);
-    this.mqttService.publish(stateTopic,message);
+    this.mqttService.publish(stateTopic,JSON.stringify(message));    
+    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/device/remove`, "", (value) => {
+      if(value.error){
+        console.log(value.error);
+        this.cantRemove = true;
+        this.invalidMessage = value.error;
+      } else {
+        this.cantRemove = false;
+        this.closeModal();
+      }
+    });
+  }
+
+  forceRemoveDevice() {
+    throw new Error('Method not implemented.');
+  } 
+
+  closeModal() {
+    this.modalService.dismissAll();
+  }
+
+  openRenameModal() {
+    this.modalService.open(this.renameModalContent);
+  }  
+  openDeleteModal() {
+    this.modalService.open(this.deleteModalContent);
   }
 }

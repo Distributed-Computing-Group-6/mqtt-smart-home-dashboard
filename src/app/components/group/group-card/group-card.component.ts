@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MqttService } from '../../../services/mqtt.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,15 +10,17 @@ declare var $: any;
   styleUrl: './group-card.component.css'
 })
 export class GroupCardComponent {
-  @ViewChild('editModalClose') editClose: any;
+  @ViewChild('renameModalContent') renameModalContent!: TemplateRef<any>;
+  @ViewChild('deleteModalContent') deleteModalContent!: TemplateRef<any>;
   @Input() group!: any;
   topic!: string;
   isEdit: boolean = true;
   baseTopic!: string;
   isInvalid: boolean = false;
   invalidMessage!: string;
+  cantRemove: boolean = false;
   
-  constructor(public mqttService: MqttService, private modalService: NgbModal) {}
+  constructor(public mqttService: MqttService,private modalService: NgbModal) {}
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
@@ -42,22 +44,38 @@ export class GroupCardComponent {
         this.isInvalid = true;
         this.invalidMessage = value.error;
       } else {
-        this.editClose.nativeElement.click();
         this.isInvalid = false;
+        this.closeModal();
       }
     });
   }
 
   deleteGroup(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/group/remove`;
-    let message = this.group.friendly_name;
+    let message = {"id": this.group.friendly_name, "force":this.cantRemove};
     console.log(message);
-    this.mqttService.publish(stateTopic,message);
+    this.mqttService.publish(stateTopic,JSON.stringify(message));    
+    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/group/remove`, "", (value) => {
+      if(value.error){
+        console.log(value.error);
+        this.cantRemove = true;
+        this.invalidMessage = value.error;
+      } else {
+        this.cantRemove = false;
+        this.closeModal();
+      }
+    });
   }
 
   closeModal() {
-    // You need to get the modal reference and close it
-    this.modalService.dismissAll();  // This closes all open modals
+    this.modalService.dismissAll();
+  }
+
+  openRenameModal() {
+    this.modalService.open(this.renameModalContent);
+  }  
+  openDeleteModal() {
+    this.modalService.open(this.deleteModalContent);
   }
   
 }
