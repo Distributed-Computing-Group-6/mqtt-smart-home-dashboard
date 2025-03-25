@@ -19,6 +19,7 @@ export class GroupCardComponent {
   isInvalid: boolean = false;
   invalidMessage!: string;
   cantRemove: boolean = false;
+  deleting: boolean = false;
   
   constructor(public mqttService: MqttService,private modalService: NgbModal) {}
 
@@ -53,17 +54,21 @@ export class GroupCardComponent {
   deleteGroup(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/group/remove`;
     let message = {"id": this.group.friendly_name, "force":this.cantRemove};
+
+    this.deleting=true;
+
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
     this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/group/remove`, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.cantRemove = true;
-        this.invalidMessage = value.error;
+        this.invalidMessage = value.error.split(" (")[0] || value.error;
       } else {
         this.cantRemove = false;
         this.closeModal();
       }
+      this.deleting=false;
     });
   }
 

@@ -89,6 +89,10 @@
   <div *ngIf="cantRemove" class="modal-body is-invalid">
     {{invalidMessage}}
   </div>
+  <div *ngIf="deleting" class="modal-body">
+    <span class="sr-only">Deleting...</span>
+    <div class="spinner-border" style="width: 16px; height: 16px;" role="status"></div>
+  </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
     <button type="button" (click)="deleteDevice()" class="btn btn-danger">

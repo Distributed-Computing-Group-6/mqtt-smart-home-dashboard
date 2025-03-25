@@ -19,6 +19,7 @@ export class DeviceComponent {
   isInvalid: boolean = false;
   invalidMessage!: string;
   cantRemove: boolean = false;
+  deleting: boolean = false;
 
   constructor(public mqttService: MqttService, private modalService: NgbModal) {}
 
@@ -53,23 +54,22 @@ export class DeviceComponent {
   deleteDevice(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/device/remove`;
     let message = {"id": this.device.friendly_name, "force":this.cantRemove};
-    console.log(message);
+
+    this.deleting=true;
+
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
     this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/device/remove`, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.cantRemove = true;
-        this.invalidMessage = value.error;
+        this.invalidMessage = value.error.split(" (")[0] || value.error;
       } else {
         this.cantRemove = false;
         this.closeModal();
       }
+      this.deleting=false;
     });
   }
-
-  forceRemoveDevice() {
-    throw new Error('Method not implemented.');
-  } 
 
   closeModal() {
     this.modalService.dismissAll();
