@@ -2,6 +2,7 @@ import { Component, Inject, Input, TemplateRef, ViewChild } from '@angular/core'
 import { MqttService } from '../../services/mqtt.service';
 import { NgIfContext } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-device',
@@ -16,12 +17,12 @@ export class DeviceComponent {
   topic!: string;
   baseTopic!: string;
   elseTemplate!: TemplateRef<NgIfContext<boolean>> | null ;
+  invalidMessage: string|undefined;
   isInvalid: boolean = false;
-  invalidMessage!: string;
   cantRemove: boolean = false;
   deleting: boolean = false;
 
-  constructor(public mqttService: MqttService, private modalService: NgbModal) {}
+  constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location) {}
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
@@ -53,9 +54,12 @@ export class DeviceComponent {
 
   deleteDevice(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/device/remove`;
-    let message = {"id": this.device.friendly_name, "force":this.cantRemove};
+    let message;
 
+    this.cantRemove=false
     this.deleting=true;
+
+    message = {"id": this.device.friendly_name, "force":this.cantRemove};
 
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
     this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/device/remove`, "", (value) => {
@@ -66,19 +70,28 @@ export class DeviceComponent {
       } else {
         this.cantRemove = false;
         this.closeModal();
+        this.location.back();
       }
       this.deleting=false;
     });
   }
 
+  resetModal(){
+    this.isInvalid = false;
+    this.cantRemove = false;
+    this.deleting=false;
+    this.invalidMessage = undefined;
+  }
+
   closeModal() {
+    this.resetModal();
     this.modalService.dismissAll();
   }
 
   openRenameModal() {
-    this.modalService.open(this.renameModalContent);
+    this.modalService.open(this.renameModalContent, { backdrop: 'static', keyboard: false });
   }  
   openDeleteModal() {
-    this.modalService.open(this.deleteModalContent);
+    this.modalService.open(this.deleteModalContent, { backdrop: 'static', keyboard: false });
   }
 }

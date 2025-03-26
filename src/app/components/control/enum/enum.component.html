@@ -21,7 +21,7 @@
       [disabled]="!canWrite()">
       {{ inputValue }}
     </button>
-    <ng-container *ngIf="canWrite()s">
+    <ng-container *ngIf="canWrite()">
       <div class="dropdown-menu">
         <ng-container *ngFor="let value of control.values">
           <a class="dropdown-item" (click)="setValue(value)">{{ value }}</a>

@@ -1,21 +1,36 @@
 <nav class="navbar navbar-expand-lg fixed-top bg-primary clean-navbar navbar-dark">
-    <div class="container"><a class="navbar-brand logo" [routerLink]="['']">Brand</a><button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-        <div id="navcol-1" class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" [routerLink]="['/home']" routerLinkActive="active">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" [routerLink]="['/groups']" routerLinkActive="active">Groups</a></li>
-                <li class="nav-item"><a class="btn btn-primary" (click)="openAddModal()">Add Device</a></li>          
-                <li class="nav-item"><a class="btn btn-secondary" [routerLink]="['/logout']">Logout</a></li>
-            </ul>
-        </div>
-    </div>
+  <div class="container">
+      <a class="navbar-brand logo" [routerLink]="['']">Brand</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navcol-1">
+          <span class="visually-hidden">Toggle navigation</span>
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="navcol-1" class="collapse navbar-collapse">
+          <ul class="navbar-nav ms-auto d-flex align-items-center">
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="['/home']" routerLinkActive="active">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="['/groups']" routerLinkActive="active">Groups</a>
+              </li>
+              <li class="nav-item p-3">
+                  <a class="btn btn-light btn-sm px-3" (click)="openAddModal()">
+                    <i class="bi bi-plus-circle"></i> Add Device
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="btn btn-secondary btn-sm" [routerLink]="['/logout']">Logout</a>
+              </li>
+          </ul>
+      </div>
+  </div>
 </nav>
 
 <!-- Modal -->
 <ng-template #addModalContent let-modal>
     <div class="modal-header">
       <h5 class="modal-title" id="addModalLabel">Add Device</h5>
-      <button type="button" class="btn-close" (click)="modal.dismiss()"  aria-label="Close"></button>
+      <button type="button" class="btn-close" (click)="closeModal()"  aria-label="Close"></button>
     </div>
     <div *ngIf="joiningCountdown>0" class="modal-body">
         <div class="row align-items-center">
@@ -26,7 +41,7 @@
             <div class="col-3 text-end fw-bold">
               {{ joiningCountdown }}s
             </div>
-          </div>
+        </div>
     </div>
     <div *ngIf="cantFind" class="modal-body is-invalid">
       {{invalidMessage}}
@@ -40,7 +55,7 @@
       </ul>
     </div>  
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
       <button type="button" (click)="addZigbee()" class="btn btn-primary">Allows Zigbee Devices to Join</button>
     </div>
   </ng-template>

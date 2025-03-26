@@ -16,8 +16,8 @@ export class GroupCardComponent {
   topic!: string;
   isEdit: boolean = true;
   baseTopic!: string;
+  invalidMessage: string|undefined;
   isInvalid: boolean = false;
-  invalidMessage!: string;
   cantRemove: boolean = false;
   deleting: boolean = false;
   
@@ -53,9 +53,12 @@ export class GroupCardComponent {
 
   deleteGroup(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/group/remove`;
-    let message = {"id": this.group.friendly_name, "force":this.cantRemove};
+    let message;
 
+    this.cantRemove=false
     this.deleting=true;
+
+    message = {"id": this.group.friendly_name, "force":this.cantRemove};
 
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
@@ -72,15 +75,23 @@ export class GroupCardComponent {
     });
   }
 
+  resetModal(){
+    this.isInvalid = false;
+    this.cantRemove = false;
+    this.deleting=false;
+    this.invalidMessage = undefined;
+  }
+
   closeModal() {
+    this.resetModal();
     this.modalService.dismissAll();
   }
 
   openRenameModal() {
-    this.modalService.open(this.renameModalContent);
+    this.modalService.open(this.renameModalContent, { backdrop: 'static', keyboard: false });
   }  
   openDeleteModal() {
-    this.modalService.open(this.deleteModalContent);
+    this.modalService.open(this.deleteModalContent, { backdrop: 'static', keyboard: false });
   }
   
 }

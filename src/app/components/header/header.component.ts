@@ -12,7 +12,7 @@ export class HeaderComponent {
   joiningCountdown: number = 0;
   invalidMessage!: string;
   cantFind: boolean = false;
-  joinedDevices: { friendly_name: string }[] = [];
+  joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
 
   constructor(public mqttService: MqttService,private modalService: NgbModal) {}
@@ -20,8 +20,10 @@ export class HeaderComponent {
   addZigbee(){
     const baseTopic = this.mqttService.getBaseTopic();
     const stateTopic:string = `${baseTopic}/bridge/request/permit_join`;
-    let joinTime = 6;
+    let joinTime = 60;
     let message = {"time": joinTime};
+
+    this.joinedDevices = [];
 
     this.joiningCountdown=joinTime;
 
@@ -35,14 +37,16 @@ export class HeaderComponent {
         clearInterval(countdownInterval);
       }
     }, 1000);
-
+    
     this.mqttService.getUpdate(`${baseTopic}/bridge/event`, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.cantFind = true;
         this.invalidMessage = value.error;
       } else if(value.type == "device_announce"){
-        this.joinedDevices.push(value.data.friendly_name);
+        if (!this.joinedDevices.some(device => device.ieee_address === value.data.ieee_address)) {
+          this.joinedDevices.push(value.data);
+        }
         this.invalidMessage = value.data;
         this.cantFind = false;
       }
@@ -50,11 +54,25 @@ export class HeaderComponent {
 
   }
 
-  openAddModal() {
-    this.modalService.open(this.addModalContent);
+  openAddModal() {    
+    this.modalService.open(this.addModalContent, { backdrop: 'static', keyboard: false });
   }    
 
+  cancelJoin(){
+    const baseTopic = this.mqttService.getBaseTopic();
+    const stateTopic:string = `${baseTopic}/bridge/request/permit_join`;
+    let message = {"time": 0};
+    this.mqttService.publish(stateTopic,JSON.stringify(message));   
+
+    this.joinedDevices = [];
+    this.invalidMessage = "";
+    this.cantFind = false;
+    this.joiningCountdown=0;
+
+  }
+
   closeModal() {
+    this.cancelJoin();
     this.modalService.dismissAll();
   }
 }

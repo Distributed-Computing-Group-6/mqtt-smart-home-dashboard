@@ -53,7 +53,7 @@
 <ng-template #renameModalContent let-modal>
   <div class="modal-header">
     <h5 class="modal-title" id="renameModalLabel">Rename {{ device.friendly_name }}</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
   </div>
   <div class="modal-body">
     <form #editForm="ngForm" class="row g-3" (submit)="editName($event, newNameInput.value)">
@@ -73,7 +73,7 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" #editModalClose (click)="modal.dismiss()">Close</button>
+        <button type="button" class="btn btn-secondary" #editModalClose (click)="closeModal()">Close</button>
         <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Save changes</button>
       </div>
     </form>
@@ -84,17 +84,18 @@
 <ng-template #deleteModalContent let-modal>
   <div class="modal-header">
     <h5 class="modal-title" id="deleteModalLabel">Delete {{ device.friendly_name }}</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
   </div>
-  <div *ngIf="cantRemove" class="modal-body is-invalid">
-    {{invalidMessage}}
+  <div *ngIf="cantRemove" class="modal-body d-flex align-items-center is-invalid">
+    <i class="bi bi-x-circle me-2 text-danger"></i>
+    <span class="text-danger">{{ invalidMessage }}</span>
   </div>
-  <div *ngIf="deleting" class="modal-body">
-    <span class="sr-only">Deleting...</span>
+  <div *ngIf="deleting" class="modal-body d-flex align-items-center">
+    <span class="me-2">🗑️ Deleting...</span>
     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
     <button type="button" (click)="deleteDevice()" class="btn btn-danger">
       {{ !cantRemove ? "Confirm Delete" : "Force Delete" }}
     </button>
