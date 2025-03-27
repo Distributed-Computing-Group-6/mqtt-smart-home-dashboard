@@ -1,14 +1,19 @@
-
 router-outlet {
-    display: block;
-    margin-top: 20px;
+  display: block;
+  margin-top: 70px; 
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+app-footer {
+  padding-top: 40px;
+}
+
+@media (max-width: 992px) {
+  router-outlet {
+    margin-top: 50px;
   }
-  .main-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
-  app-footer {
-    margin-top: auto;
-  }
+}

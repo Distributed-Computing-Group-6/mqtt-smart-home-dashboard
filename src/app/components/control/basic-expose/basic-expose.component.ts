@@ -7,16 +7,24 @@ import { MqttService } from '../../../services/mqtt.service';
     styleUrl: './basic-expose.component.css'
   })
 export class BasicExposeComponent implements OnInit{
-    @Input() topic!: string;
+    @Input() friendly_name!: string;
     @Input() control!: any;
     @Input() isCard!: boolean;
+    @Input() topic!: string;
+    @Input() compositeProperty!: string;
     accessArray!: string[];
     inputValue: any;
 
-    constructor(public mqttService: MqttService){
-    }
-
-    ngOnInit(){
+    constructor(public mqttService: MqttService) {}
+  
+    ngOnInit() {
+        if(!this.topic){
+            this.topic = `${this.mqttService.getBaseTopic()}/${this.friendly_name}`;
+        }
+        if (this.compositeProperty!=null) {
+            console.log(this.compositeProperty);
+            this.control.property= `${this.compositeProperty}/${this.control.property}`;
+        }
         this.listenForChange();
         this.startState();
     }

@@ -11,11 +11,11 @@ export class NumericComponent extends BasicExposeComponent {
   maxValue!: number;
   override inputValue!: number;
 
-  override ngOnInit() {
+  starting() {
     this.minValue = this.control?.value_min ?? 0;    // Default to 0 if undefined
     this.maxValue = this.control?.value_max ?? 254;    // Default to 254 if undefined
     this.inputValue = this.minValue;
-    // console.log('NumericComponent initialized with control:', this.control);
+    // console.log('NumericComponent initialized with control:', this.control);s
     
     if (this.control) {
       const savedState = JSON.parse(localStorage.getItem(this.topic)!);
@@ -34,6 +34,7 @@ export class NumericComponent extends BasicExposeComponent {
   }
 
   override startState(): void {
+    this.starting();
     if (this.control) {
       const savedState = JSON.parse(localStorage.getItem(this.topic)!);
       const property = this.control.property;

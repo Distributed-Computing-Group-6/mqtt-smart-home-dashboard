@@ -1,32 +1,42 @@
 
   <div class="flex-fill card flex-shrink-1" 
   [ngClass]="{'dash-card': isCard, 'page': !isCard,}">
-    <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/device', device.ieee]">
-      <h4 class="card-title">{{ device.friendly_name }}</h4>
+  <div class="card-header pb-0">
+    <div class="d-flex align-items-center justify-content-between">
+      <h4 class="card-title mb-0">
+        <a [routerLink]="['/device', device.ieee]" class="text-decoration-none text-dark">
+          {{ device.friendly_name }}
+        </a>
+      </h4>
+      <div *ngIf="!isCard" class="btn-group btn-group-sm">
+        <button class="btn btn-secondary" (click)="openRenameModal()"><i class="bi bi-pencil"></i></button>
+        <button class="btn btn-danger" (click)="openDeleteModal()"><i class="bi bi-trash3"></i></button>
+      </div>
     </div>
+  </div>    
     <div class="row card-body justify-content-center">
       <ng-container *ngFor="let control of device.controls" [ngSwitch]="control.type">
         
         <ng-container *ngSwitchCase="'binary'">
-            <app-binary [topic]="topic" [control]="control" [isCard]="isCard"></app-binary>
+            <app-binary [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-binary>
         </ng-container>
 
         <ng-container *ngSwitchCase="'numeric'">
           <ng-container *ngIf="control.name !== 'color_temp_startup' || !isCard">
-              <app-numeric [topic]="topic" [control]="control" [isCard]="isCard"></app-numeric>
+              <app-numeric [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-numeric>
           </ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'enum'">
-              <app-enum [topic]="topic" [control]="control" [isCard]="isCard"></app-enum>
+              <app-enum [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-enum>
         </ng-container>
 
         <ng-container *ngSwitchCase="'composite'">
           <ng-container *ngIf="control.name == 'color_xy'; else elseTemplate">
-            <app-color [topic]="topic" [control]="control" [isCard]="isCard"></app-color>
+            <app-color [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-color>
           </ng-container>
           <ng-template #elseTemplate>
-            <app-composite [topic]="topic" [control]="control" [isCard]="isCard"></app-composite>
+            <app-composite [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-composite>
           </ng-template>
         </ng-container>
 
@@ -38,3 +48,19 @@
       
     </div>
   </div>
+
+<app-modal 
+  #renameModalContent
+  [title]="'Rename ' + device.friendly_name" 
+  action="edit"
+  type="device"
+  [name]="device.friendly_name">
+</app-modal>
+
+<app-modal 
+  #deleteModalContent
+  [title]="'Delete ' + device.friendly_name" 
+  action="delete"
+  type="device"
+  [name]="device.friendly_name">
+</app-modal>

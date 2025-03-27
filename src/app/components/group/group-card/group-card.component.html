@@ -1,13 +1,38 @@
 
 <div class="flex-fill card flex-shrink-1">
-    <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/groups', group.id]">
-      <h4 class="card-title">{{ group.friendly_name }}</h4>
-    </div>
+    <div class="card-header pb-0">
+      <div class="d-flex align-items-center justify-content-between">
+        <h4 class="card-title mb-0">
+          <a [routerLink]="['/groups', group.id]" class="text-decoration-none text-dark">
+            {{ group.friendly_name }}
+          </a>
+        </h4>
+        <div *ngIf="isEdit" class="btn-group btn-group-sm">
+          <button class="btn btn-secondary" (click)="openRenameModal()"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-danger" (click)="openDeleteModal()"><i class="bi bi-trash3"></i></button>
+        </div>
+      </div>
+    </div>   
     <div class="row card-body justify-content-center">
-
-              <div *ngFor="let device of group.members">
-                <app-composite [topic]="topic" [control]="device" type="group"></app-composite>
-            </div>
-      
+      <!-- <app-composite friendly_name="Whole Group" [topic]="topic" [control]="group.members[0]" [isCard]="true" type="group"></app-composite> -->
+      <div *ngFor="let device of group.members">
+        <app-composite [friendly_name]="device.friendly_name" [control]="device" [isCard]="true" type="group"></app-composite>
+      </div>
     </div>
   </div>
+
+<app-modal 
+  #renameModalContent
+  [title]="'Rename ' + group.friendly_name" 
+  action="edit"
+  type="group"
+  [name]="group.friendly_name">
+</app-modal>
+
+<app-modal 
+  #deleteModalContent
+  [title]="'Delete ' + group.friendly_name" 
+  action="delete"
+  type="group"
+  [name]="group.friendly_name">
+</app-modal>

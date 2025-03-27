@@ -162,7 +162,7 @@ export class MqttService {
         if (err) {
           console.error(`Publish error to topic ${topic}`, err);
         } else {
-          // console.log(`Message published to ${topic}: ${message}`);
+          console.log(`Message published to ${topic}: ${message}`);
         }
       });
     }
@@ -186,7 +186,7 @@ export class MqttService {
         topicCallbacks.forEach(({ property, callback }) => {
           const data = parsedMessage;
           this.saveStates(data, receivedTopic);
-          callback(data[property]);
+          callback(property==""?data:data[property]);
         });
       }
     } catch (error) {

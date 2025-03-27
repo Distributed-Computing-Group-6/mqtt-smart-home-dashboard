@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { BasicExposeComponent } from '../basic-expose/basic-expose.component';
 
 @Component({
@@ -21,7 +21,7 @@ export class EnumComponent extends BasicExposeComponent {
 
     console.log(this.control.values.length);
 
-    this.isCompact=(this.isCard&&this.control.values.length<=3)||(!this.isCard&&this.control.values.length<=5)
+    this.checkScreenSize();
 
     this.inputValue = saveState && saveState[property] ? saveState[property] : this.control.values[0];
   }
@@ -30,6 +30,20 @@ export class EnumComponent extends BasicExposeComponent {
     if(this.canWrite()){
       this.inputValue=value;
       this.stateChange();
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    // You can change this breakpoint to suit your design
+    if(window.innerWidth < 768){
+      this.isCompact = false;
+    } else {
+      this.isCompact = (this.isCard&&this.control.values.length<=3)||(!this.isCard&&this.control.values.length<=5);
     }
   }
 

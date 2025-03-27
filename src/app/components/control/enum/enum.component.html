@@ -1,4 +1,4 @@
-<app-basic-expose [topic]="topic" [control]="control">
+<app-basic-expose [control]="control">
   <div *ngIf="isCompact" class="btn-group btn-group-sm btn-group-toggle w-100" data-toggle="buttons">
     <button 
       *ngFor="let value of control.values" 
@@ -21,7 +21,7 @@
       [disabled]="!canWrite()">
       {{ inputValue }}
     </button>
-    <ng-container *ngIf="canWrite()s">
+    <ng-container *ngIf="canWrite()">
       <div class="dropdown-menu">
         <ng-container *ngFor="let value of control.values">
           <a class="dropdown-item" (click)="setValue(value)">{{ value }}</a>

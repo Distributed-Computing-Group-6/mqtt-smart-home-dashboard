@@ -1,6 +1,6 @@
-import { Component, Inject, Input, TemplateRef } from '@angular/core';
+import { Component, Inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
-import { NgIfContext } from '@angular/common';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-device',
@@ -8,16 +8,17 @@ import { NgIfContext } from '@angular/common';
   styleUrl: './device.component.css'
 })
 export class DeviceComponent {
+  @ViewChild('renameModalContent') renameModalContent!: ModalComponent;
+  @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
   @Input() device!: any;
-  topic!: string;
-  elseTemplate!: TemplateRef<NgIfContext<boolean>> | null ;
   @Input() isCard: boolean = true;
 
-  constructor(public mqttService: MqttService) {}
 
-  ngOnInit() {
-    console.log(this.isCard);
-    this.topic = `${this.mqttService.getBaseTopic()}/${this.device.friendly_name}`;
-  }
+  openRenameModal() {
+    this.renameModalContent.openModal();
+  }  
   
+  openDeleteModal() {
+    this.deleteModalContent.openModal();
+  }
 }
