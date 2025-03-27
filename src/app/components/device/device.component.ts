@@ -3,6 +3,7 @@ import { MqttService } from '../../services/mqtt.service';
 import { NgIfContext } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
+import { ModalComponent } from '../models/modal/modal.component';
 
 @Component({
   selector: 'app-device',
@@ -10,8 +11,8 @@ import { Location } from '@angular/common';
   styleUrl: './device.component.css'
 })
 export class DeviceComponent {
-  @ViewChild('renameModalContent') renameModalContent!: TemplateRef<any>;
-  @ViewChild('deleteModalContent') deleteModalContent!: TemplateRef<any>;
+  @ViewChild('renameModalContent') renameModalContent!: ModalComponent;
+  @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
   @Input() device!: any;
   @Input() isCard: boolean = true;
   topic!: string;
@@ -47,29 +48,29 @@ export class DeviceComponent {
         this.invalidMessage = value.error;
       } else {
         this.isInvalid = false;
-        this.closeModal();
+        this.renameModalContent.closeModal();
       }
     });
   }
 
-  deleteDevice(){
-    const stateTopic:string = `${this.baseTopic}/bridge/request/device/remove`;
+  deleteDevice(type:string, name:string){
+    const stateTopic:string = `${this.baseTopic}/bridge/request/${type}/remove`;
     let message;
 
     this.cantRemove=false
     this.deleting=true;
 
-    message = {"id": this.device.friendly_name, "force":this.cantRemove};
+    message = {"id": name, "force":this.cantRemove};
 
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
-    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/device/remove`, "", (value) => {
+    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/${type}/remove`, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.cantRemove = true;
         this.invalidMessage = value.error.split(" (")[0] || value.error;
       } else {
         this.cantRemove = false;
-        this.closeModal();
+        this.deleteModalContent.closeModal();
         this.location.back();
       }
       this.deleting=false;
@@ -79,19 +80,15 @@ export class DeviceComponent {
   resetModal(){
     this.isInvalid = false;
     this.cantRemove = false;
-    this.deleting=false;
+    this.deleting = false;
     this.invalidMessage = undefined;
   }
 
-  closeModal() {
-    this.resetModal();
-    this.modalService.dismissAll();
-  }
-
   openRenameModal() {
-    this.modalService.open(this.renameModalContent, { backdrop: 'static', keyboard: false });
+    this.renameModalContent.openModal();
   }  
+  
   openDeleteModal() {
-    this.modalService.open(this.deleteModalContent, { backdrop: 'static', keyboard: false });
+    this.deleteModalContent.openModal();
   }
 }

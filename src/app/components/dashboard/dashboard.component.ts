@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class DashboardComponent implements OnInit {
   public devices:any;
   public id!:string|null;
+  public groupName!:string;
 
   constructor(private mqttService: MqttService,private route: ActivatedRoute){}
 
@@ -20,11 +21,12 @@ export class DashboardComponent implements OnInit {
   getCards() {
     this.id = this.route.snapshot.paramMap.get('groupId');
 
-    this.mqttService.getGroups().subscribe((groups: { members: any[], id: number }[]) => {
+    this.mqttService.getGroups().subscribe((groups: { members: any[], id: number, friendly_name: string }[]) => {
       if (this.id!=null) {
         const filteredGroup = groups.filter(group => group.id.toString() === this.id);
         if (filteredGroup.length > 0) {
           this.setDevices(filteredGroup[0].members);
+          this.groupName = filteredGroup[0].friendly_name;
         }
       }
     });

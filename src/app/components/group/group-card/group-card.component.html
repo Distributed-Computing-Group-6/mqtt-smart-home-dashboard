@@ -1,8 +1,5 @@
 
 <div class="flex-fill card flex-shrink-1">
-    <!-- <div class="card-header pb-0 d-flex justify-content-between" [routerLink]="['/groups', group.id]">
-      <h4 class="card-title">{{ group.friendly_name }}</h4>
-    </div> -->
     <div class="card-header pb-0">
       <div class="d-flex align-items-center justify-content-between">
         <h4 class="card-title mb-0">
@@ -17,22 +14,20 @@
       </div>
     </div>   
     <div class="row card-body justify-content-center">
-
-              <div *ngFor="let device of group.members">
-                <app-composite [topic]="topic" [control]="device" [isCard]="true" type="group"></app-composite>
-            </div>
-      
+      <div *ngFor="let device of group.members">
+        <app-composite [topic]="topic" [control]="device" [isCard]="true" type="group"></app-composite>
+      </div>
     </div>
   </div>
 
-  
+<app-modal 
+  #renameModalContent
+  [title]="'Rename ' + group.friendly_name" 
+  (clearModal)="resetModal()"
+  [bodyTemplate]="renameModalBody">
+</app-modal>
 
-<!-- Modal -->
-<ng-template #renameModalContent let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="renameModalLabel">Rename {{ group.friendly_name }}</h5>
-    <button type="button" class="btn-close" (click)="closeModal()"  aria-label="Close"></button>
-  </div>
+<ng-template #renameModalBody> 
   <div class="modal-body">
     <form #editForm="ngForm" class="row g-3" (submit)="editName($event, newNameInput.value)">
       <label for="newName" class="col-sm-4 col-form-label">New Name</label>
@@ -51,19 +46,21 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()" >Close</button>
+        <button type="button" class="btn btn-secondary" (click)="renameModalContent.closeModal()" >Close</button>
         <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Save changes</button>
       </div>
     </form>
   </div>
 </ng-template>
 
-<!-- Modal -->
-<ng-template #deleteModalContent let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="deleteModalLabel">Delete {{ group.friendly_name }}</h5>
-    <button type="button" class="btn-close" (click)="closeModal()"  aria-label="Close"></button>
-  </div>
+<app-modal 
+  #deleteModalContent
+  [title]="'Delete ' + group.friendly_name" 
+  (clearModal)="resetModal()"
+  [bodyTemplate]="deleteModal">
+</app-modal>
+
+<ng-template #deleteModal>
   <div *ngIf="cantRemove" class="modal-body d-flex align-items-center is-invalid">
     <i class="bi bi-x-circle me-2 text-danger"></i>
     <span class="text-danger">{{ invalidMessage }}</span>
@@ -73,7 +70,7 @@
     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-secondary" (click)="deleteModalContent.closeModal()">Close</button>
     <button type="button" (click)="deleteGroup()" class="btn btn-danger">
       {{ !cantRemove ? "Confirm Delete" : "Force Delete" }}
     </button>

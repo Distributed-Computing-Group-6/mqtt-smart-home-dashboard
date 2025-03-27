@@ -1,6 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { MqttService } from '../../services/mqtt.service';
+import { ModalComponent } from '../models/modal/modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MqttService } from '../../services/mqtt.service';
 
 @Component({
   selector: 'app-header',
@@ -8,14 +9,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  @ViewChild('addModalContent') addModalContent!: TemplateRef<any>;
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
   joiningCountdown: number = 0;
   invalidMessage!: string;
   cantFind: boolean = false;
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
 
-  constructor(public mqttService: MqttService,private modalService: NgbModal) {}
+  constructor(public mqttService: MqttService) {}
 
   addZigbee(){
     const baseTopic = this.mqttService.getBaseTopic();
@@ -54,9 +55,9 @@ export class HeaderComponent {
 
   }
 
-  openAddModal() {    
-    this.modalService.open(this.addModalContent, { backdrop: 'static', keyboard: false });
-  }    
+  openModal() {
+    this.modalComponent.openModal();
+  }
 
   cancelJoin(){
     const baseTopic = this.mqttService.getBaseTopic();
@@ -71,8 +72,4 @@ export class HeaderComponent {
 
   }
 
-  closeModal() {
-    this.cancelJoin();
-    this.modalService.dismissAll();
-  }
 }

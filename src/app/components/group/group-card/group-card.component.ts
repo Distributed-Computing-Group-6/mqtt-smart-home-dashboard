@@ -1,6 +1,7 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MqttService } from '../../../services/mqtt.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalComponent } from '../../models/modal/modal.component';
 
 declare var $: any;
 
@@ -10,8 +11,8 @@ declare var $: any;
   styleUrl: './group-card.component.css'
 })
 export class GroupCardComponent {
-  @ViewChild('renameModalContent') renameModalContent!: TemplateRef<any>;
-  @ViewChild('deleteModalContent') deleteModalContent!: TemplateRef<any>;
+  @ViewChild('renameModalContent') renameModalContent!: ModalComponent;
+  @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
   @Input() group!: any;
   topic!: string;
   isEdit: boolean = true;
@@ -46,30 +47,30 @@ export class GroupCardComponent {
         this.invalidMessage = value.error;
       } else {
         this.isInvalid = false;
-        this.closeModal();
+        this.renameModalContent.closeModal();
       }
     });
   }
 
-  deleteGroup(){
-    const stateTopic:string = `${this.baseTopic}/bridge/request/group/remove`;
+  deleteGroup(type:string, name:string){
+    const stateTopic:string = `${this.baseTopic}/bridge/request/${type}/remove`;
     let message;
 
     this.cantRemove=false
     this.deleting=true;
 
-    message = {"id": this.group.friendly_name, "force":this.cantRemove};
+    message = {"id": name, "force":this.cantRemove};
 
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
-    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/group/remove`, "", (value) => {
+    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/${type}/remove`, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.cantRemove = true;
         this.invalidMessage = value.error.split(" (")[0] || value.error;
       } else {
         this.cantRemove = false;
-        this.closeModal();
+        this.deleteModalContent.closeModal();
       }
       this.deleting=false;
     });
@@ -82,16 +83,12 @@ export class GroupCardComponent {
     this.invalidMessage = undefined;
   }
 
-  closeModal() {
-    this.resetModal();
-    this.modalService.dismissAll();
-  }
-
   openRenameModal() {
-    this.modalService.open(this.renameModalContent, { backdrop: 'static', keyboard: false });
+    this.renameModalContent.openModal();
   }  
+  
   openDeleteModal() {
-    this.modalService.open(this.deleteModalContent, { backdrop: 'static', keyboard: false });
+    this.deleteModalContent.openModal();
   }
   
 }
