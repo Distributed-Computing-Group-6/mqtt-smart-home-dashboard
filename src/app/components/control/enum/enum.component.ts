@@ -23,8 +23,6 @@ export class EnumComponent extends BasicExposeComponent {
 
     this.checkScreenSize();
 
-    // this.isCompact=(this.isCard&&this.control.values.length<=3)||(!this.isCard&&this.control.values.length<=5)
-
     this.inputValue = saveState && saveState[property] ? saveState[property] : this.control.values[0];
   }
 

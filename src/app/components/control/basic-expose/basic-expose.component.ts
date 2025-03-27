@@ -11,6 +11,7 @@ export class BasicExposeComponent implements OnInit{
     @Input() control!: any;
     @Input() isCard!: boolean;
     @Input() topic!: string;
+    @Input() compositeProperty!: string;
     accessArray!: string[];
     inputValue: any;
 
@@ -19,6 +20,10 @@ export class BasicExposeComponent implements OnInit{
     ngOnInit() {
         if(!this.topic){
             this.topic = `${this.mqttService.getBaseTopic()}/${this.friendly_name}`;
+        }
+        if (this.compositeProperty!=null) {
+            console.log(this.compositeProperty);
+            this.control.property= `${this.compositeProperty}/${this.control.property}`;
         }
         this.listenForChange();
         this.startState();
