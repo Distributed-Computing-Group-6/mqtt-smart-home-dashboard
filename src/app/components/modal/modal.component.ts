@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MqttService } from '../../../services/mqtt.service';
+import { MqttService } from '../../services/mqtt.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
 
@@ -29,6 +29,43 @@ export class ModalComponent {
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
+  }
+
+  addZigbee(){
+    const baseTopic = this.mqttService.getBaseTopic();
+    const stateTopic:string = `${baseTopic}/bridge/request/permit_join`;
+    let joinTime = 60;
+    let message = {"time": joinTime};
+
+    this.joinedDevices = [];
+
+    this.joiningCountdown=joinTime;
+
+    console.log(message);
+    this.mqttService.publish(stateTopic,JSON.stringify(message));    
+
+    const countdownInterval = setInterval(() => {
+      if (this.joiningCountdown > 0) {
+        this.joiningCountdown--;
+      } else {
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+    
+    this.mqttService.getUpdate(`${baseTopic}/bridge/event`, "", (value) => {
+      if(value.error){
+        console.log(value.error);
+        this.cantFind = true;
+        this.invalidMessage = value.error;
+      } else if(value.type == "device_announce"){
+        if (!this.joinedDevices.some(device => device.ieee_address === value.data.ieee_address)) {
+          this.joinedDevices.push(value.data);
+        }
+        this.invalidMessage = value.data;
+        this.cantFind = false;
+      }
+    });
+
   }
   
   editName(event: Event,newName:string){  
@@ -85,53 +122,9 @@ export class ModalComponent {
     this.cantRemove = false;
     this.deleting=false;
     this.invalidMessage = "";
-    this.cancelJoin();
-  }
-  
-  openModal() {    
-    this.modalService.open(this.modalContent, { backdrop: 'static', keyboard: false });
-  }    
-
-  closeModal() {
-    this.resetModal();
-    this.modalService.dismissAll();
-  }
-
-  addZigbee(){
-    const baseTopic = this.mqttService.getBaseTopic();
-    const stateTopic:string = `${baseTopic}/bridge/request/permit_join`;
-    let joinTime = 60;
-    let message = {"time": joinTime};
-
-    this.joinedDevices = [];
-
-    this.joiningCountdown=joinTime;
-
-    console.log(message);
-    this.mqttService.publish(stateTopic,JSON.stringify(message));    
-
-    const countdownInterval = setInterval(() => {
-      if (this.joiningCountdown > 0) {
-        this.joiningCountdown--;
-      } else {
-        clearInterval(countdownInterval);
-      }
-    }, 1000);
-    
-    this.mqttService.getUpdate(`${baseTopic}/bridge/event`, "", (value) => {
-      if(value.error){
-        console.log(value.error);
-        this.cantFind = true;
-        this.invalidMessage = value.error;
-      } else if(value.type == "device_announce"){
-        if (!this.joinedDevices.some(device => device.ieee_address === value.data.ieee_address)) {
-          this.joinedDevices.push(value.data);
-        }
-        this.invalidMessage = value.data;
-        this.cantFind = false;
-      }
-    });
-
+    if(this.joiningCountdown>0){
+      this.cancelJoin();
+    }
   }
 
   cancelJoin(){
@@ -141,10 +134,17 @@ export class ModalComponent {
     this.mqttService.publish(stateTopic,JSON.stringify(message));   
 
     this.joinedDevices = [];
-    this.invalidMessage = "";
     this.cantFind = false;
     this.joiningCountdown=0;
+  }
+  
+  openModal() {    
+    this.modalService.open(this.modalContent, { backdrop: 'static', keyboard: false });
+  }    
 
+  closeModal() {
+    this.resetModal();
+    this.modalService.dismissAll();
   }
 }
 

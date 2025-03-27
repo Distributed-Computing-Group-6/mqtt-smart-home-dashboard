@@ -1,7 +1,5 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { ModalComponent } from '../models/modal/modal.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MqttService } from '../../services/mqtt.service';
+import { Component, ViewChild } from '@angular/core';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-header',

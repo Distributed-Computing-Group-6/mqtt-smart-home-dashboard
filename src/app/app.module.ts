@@ -21,7 +21,7 @@ import { DevicePageComponent } from './components/device-page/device-page.compon
 import { GroupsPageComponent } from './components/group/groups-page/groups-page.component';
 import { GroupCardComponent } from './components/group/group-card/group-card.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from './components/models/modal/modal.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
   declarations: [
