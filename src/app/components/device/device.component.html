@@ -52,57 +52,15 @@
 <app-modal 
   #renameModalContent
   [title]="'Rename ' + device.friendly_name" 
-  (clearModal)="resetModal()"
-  [bodyTemplate]="renameModalBody">
+  action="edit"
+  type="device"
+  [name]="device.friendly_name">
 </app-modal>
-
-<ng-template #renameModalBody> 
-  <div class="modal-body">
-  <form #editForm="ngForm" class="row g-3" (submit)="editName($event, newNameInput.value)">
-    <label for="newName" class="col-sm-4 col-form-label">New Name</label>
-    <div class="col-sm-8">
-      <input 
-        type="text" 
-        class="form-control" 
-        id="newName" 
-        #newNameInput
-        placeholder="{{ device.friendly_name }}"
-        required      
-        [ngClass]="{'is-invalid': isInvalid, 'is-valid': !isInvalid}">
-
-        <div *ngIf="isInvalid" class="invalid-feedback">
-          {{invalidMessage}}
-        </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="renameModalContent.closeModal()">Close</button>
-      <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Save changes</button>
-    </div>
-  </form>
-</div>
-</ng-template>
 
 <app-modal 
   #deleteModalContent
   [title]="'Delete ' + device.friendly_name" 
-  (clearModal)="resetModal()"
-  [bodyTemplate]="deleteModal">
+  action="delete"
+  type="device"
+  [name]="device.friendly_name">
 </app-modal>
-
-<ng-template #deleteModal>
-  <div *ngIf="cantRemove" class="modal-body d-flex align-items-center is-invalid">
-    <i class="bi bi-x-circle me-2 text-danger"></i>
-    <span class="text-danger">{{ invalidMessage }}</span>
-  </div>
-  <div *ngIf="deleting" class="modal-body d-flex align-items-center">
-    <span class="me-2">🗑️ Deleting...</span>
-    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-  </div>
-  
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="deleteModalContent.closeModal()">Close</button>
-    <button type="button" (click)="deleteDevice()" class="btn btn-danger">
-      {{ !cantRemove ? "Confirm Delete" : "Force Delete" }}
-    </button>
-</div>
-</ng-template>

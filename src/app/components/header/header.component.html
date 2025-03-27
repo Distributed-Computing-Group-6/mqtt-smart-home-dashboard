@@ -27,37 +27,7 @@
 </nav>
 
 <app-modal 
-  #modalComponent
-  title="Add Device"
-  (clearModal)="cancelJoin()"
-  [bodyTemplate]="modalBody">
+#modalComponent
+title="Add Device" 
+action="add">
 </app-modal>
-
-<ng-template #modalBody>
-  <div *ngIf="joiningCountdown>0" class="modal-body">
-    <div class="row align-items-center">
-        <div class="col-9 d-flex align-items-center">
-          <span class="me-2">🔍 Searching for Devices...</span>
-          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-        </div>
-        <div class="col-3 text-end fw-bold">
-          {{ joiningCountdown }}s
-        </div>
-    </div>
-</div>
-<div *ngIf="cantFind" class="modal-body is-invalid">
-  {{invalidMessage}}
-</div>  
-<div *ngIf="joinedDevices.length>0" class="modal-body is-valid">
-    Found Devices
-    <ul>
-    <li *ngFor="let device of joinedDevices">
-      <strong>{{ device.friendly_name }}</strong>
-    </li>
-  </ul>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="modalComponent.closeModal()">Close</button>
-  <button type="button" (click)="addZigbee()" class="btn btn-primary">Allows Zigbee Devices to Join</button>
-</div>
-</ng-template>
