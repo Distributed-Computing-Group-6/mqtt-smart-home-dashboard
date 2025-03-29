@@ -1,7 +1,4 @@
 <div class="container">  
-
-    <!-- Back Button -->
-    <button class="btn btn-secondary" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
   
     <!-- Bridge Offline Message -->
     <div *ngIf="!isBridgeOnline" class="alert alert-danger d-flex align-items-center mt-3">
@@ -9,6 +6,9 @@
       <span>The bridge is offline. Please check your connection.</span>
     </div>
     
+    <!-- Back Button -->
+    <button class="btn btn-secondary" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
+
     <!-- Device Controls -->
     <div class="row justify-content-center pt-2">
           <app-device class="d-flex pb-3"

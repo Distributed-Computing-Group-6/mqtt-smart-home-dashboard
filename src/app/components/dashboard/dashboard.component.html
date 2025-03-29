@@ -1,16 +1,16 @@
 <div class="container">
+  <!-- Bridge Offline Message -->
+  <div *ngIf="!isBridgeOnline" class="alert alert-danger d-flex align-items-center mt-3">
+    <i class="bi bi-x-circle me-2"></i>
+    <span>The bridge is offline. Please check your connection.</span>
+  </div>
+
   <!-- Back Button -->
   <ng-container *ngIf="id != null">
     <button class="btn btn-secondary" [routerLink]="['/groups']">
       <i class="bi bi-arrow-left"></i>
     </button>
   </ng-container>
-
-  <!-- Bridge Offline Message -->
-  <div *ngIf="!isBridgeOnline" class="alert alert-danger d-flex align-items-center mt-3">
-    <i class="bi bi-x-circle me-2"></i>
-    <span>The bridge is offline. Please check your connection.</span>
-  </div>
 
   <!-- Devices List -->
   <div class="row justify-content-center pt-2">
