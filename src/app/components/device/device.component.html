@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>    
-    <div class="row card-body justify-content-center">
+    <div class="row card-body justify-content-center" [ngClass]="{ 'disabled': (!isBridgeOnline||!isDeviceOnline) }">
       <ng-container *ngFor="let control of device.controls" [ngSwitch]="control.type">
         
         <ng-container *ngSwitchCase="'binary'">
@@ -45,12 +45,10 @@
       </ng-container>
       
       <ng-content></ng-content>
-      
-      <div *ngIf="!isBridgeOnline" class="text-danger">
+      <div *ngIf="!isDeviceOnline" class="text-danger">
         <i class="bi bi-x-circle me-2"></i>
-        The bridge is offline. Please check your connection.
+        The device is offline. Please check your connection.
       </div>
-      
     </div>
   </div>
 

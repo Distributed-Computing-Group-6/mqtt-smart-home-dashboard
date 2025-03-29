@@ -12,7 +12,8 @@ export class DeviceComponent implements OnInit {
   @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
   @Input() device!: any;
   @Input() isCard: boolean = true;
-  isBridgeOnline: boolean = false;
+  @Input() isBridgeOnline: boolean = false;
+  isDeviceOnline: boolean = true;
   invalidMessage!: string;
 
   constructor(public mqttService: MqttService) {}
@@ -22,9 +23,12 @@ export class DeviceComponent implements OnInit {
   }
 
   checkState(){
-    this.mqttService.checkBridgeState().subscribe(isOnline => {
-      this.isBridgeOnline = isOnline;
-    });
+    // this.mqttService.checkBridgeState().subscribe(isOnline => {
+    //   this.isBridgeOnline = isOnline;
+    // });
+    // this.mqttService.getUpdate(`${this.mqttService.getBaseTopic()}/${this.device.friendly_name}/availability`, "", (value) => {
+    //   this.isDeviceOnline=value.state!=='offline';
+    // });
   }
 
   openRenameModal() {

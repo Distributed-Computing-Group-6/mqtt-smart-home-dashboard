@@ -10,7 +10,12 @@
   min-width: 750px;
   max-width: 1500px;
 
-}@media (max-width: 768px) {
+}
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+@media (max-width: 768px) {
   .page {
     min-width: 100%;
   }

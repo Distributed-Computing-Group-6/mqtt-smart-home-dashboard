@@ -9,12 +9,20 @@ import { MqttService } from '../../../services/mqtt.service';
 export class GroupsPageComponent {  
   public groups:any;
   public devices: any;
+  public isBridgeOnline: boolean = false;
 
   constructor(private mqttService: MqttService){}
 
   ngOnInit(): void {
     this.getCards();
-  }  
+    this.checkState();
+    }
+    
+    checkState(){
+      this.mqttService.checkBridgeState().subscribe(isOnline => {
+        this.isBridgeOnline = isOnline;
+      });
+    }
 
   getCards() {
     this.mqttService.getGroups().subscribe(groups => {

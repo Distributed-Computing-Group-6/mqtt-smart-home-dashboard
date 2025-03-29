@@ -11,12 +11,20 @@ export class DashboardComponent implements OnInit {
   public devices:any;
   public id!:string|null;
   public groupName!:string;
+  public isBridgeOnline: boolean = false;
 
   constructor(private mqttService: MqttService,private route: ActivatedRoute){}
 
   ngOnInit(): void {
     this.getCards();
-  }  
+    this.checkState();
+    }
+    
+    checkState(){
+      this.mqttService.checkBridgeState().subscribe(isOnline => {
+        this.isBridgeOnline = isOnline;
+      });
+    }
 
   getCards() {
     this.id = this.route.snapshot.paramMap.get('groupId');

@@ -13,6 +13,7 @@ export class GroupCardComponent {
   @ViewChild('renameModalContent') renameModalContent!: ModalComponent;
   @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
   @Input() group!: any;
+  @Input() isBridgeOnline: boolean = false;
   topic!: string;
   isEdit: boolean = true;
   

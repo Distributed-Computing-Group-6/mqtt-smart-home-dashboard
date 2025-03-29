@@ -14,7 +14,6 @@ export class BasicExposeComponent implements OnInit{
     @Input() compositeProperty!: string;
     accessArray!: string[];
     inputValue: any;
-    isBridgeOnline: boolean = false;
 
     constructor(public mqttService: MqttService) {}
   
@@ -23,10 +22,6 @@ export class BasicExposeComponent implements OnInit{
         this.setControlProperty();
         this.listenForChange();
         this.startState();
-    }
-
-    ngAfterViewInit(){
-        this.checkState();
     }
 
     setTopic() {
@@ -40,13 +35,6 @@ export class BasicExposeComponent implements OnInit{
             console.log(this.compositeProperty);
             this.control.property= `${this.compositeProperty}/${this.control.property}`;
         }
-    }
-
-    checkState(){
-        this.mqttService.checkBridgeState().subscribe(isOnline => {
-          this.isBridgeOnline = isOnline;
-        //   this.invalidMessage = isOnline ? "" : "The bridge is offline. Please check your connection.";
-        });
     }
 
     getAccess(): string[] {

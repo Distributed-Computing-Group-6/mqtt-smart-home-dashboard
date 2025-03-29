@@ -10,7 +10,8 @@ import { MqttService } from '../../services/mqtt.service';
 })
 export class DevicePageComponent implements OnInit {
   public device!: any;
-  public topic!: string;
+  public topic!: string;  
+  public isBridgeOnline: boolean = false;
 
   constructor(private mqttService: MqttService,private route: ActivatedRoute,private location: Location) {}
 
@@ -18,7 +19,14 @@ export class DevicePageComponent implements OnInit {
     this.getDevice();
     console.log(this.device);
     this.topic = `${this.mqttService.getBaseTopic()}/${this.device.friendly_name}`
+    this.checkState();
   }  
+  
+  checkState(){
+    this.mqttService.checkBridgeState().subscribe(isOnline => {
+      this.isBridgeOnline = isOnline;
+    });
+  }
 
   getDevice() {
     const id = this.route.snapshot.paramMap.get('deviceId');
