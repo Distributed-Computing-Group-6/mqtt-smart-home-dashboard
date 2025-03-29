@@ -13,8 +13,8 @@ export class ModalComponent {
   @ViewChild('modalContent') modalContent!: TemplateRef<any>;
   @Input() title!: string;
   @Input() bodyTemplate!: TemplateRef<any>;
-  @Input() name!: any;
-  @Input() type!: any;
+  @Input() name!: string;
+  @Input() type!: string;
   @Input() action!: string;
   baseTopic!: string;
   invalidMessage!: string;
@@ -26,6 +26,7 @@ export class ModalComponent {
   joiningCountdown: number = 0;
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
+  oldName!: string;
 
   constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location) {}
 
@@ -85,6 +86,10 @@ export class ModalComponent {
     event.preventDefault();
   
     const stateTopic:string = `${this.baseTopic}/bridge/request/${this.type}/rename`;
+    const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/rename`;
+
+    this.oldName=this.name;
+
     let message = {
       from: this.name,
       to: newName.trim()
@@ -92,7 +97,7 @@ export class ModalComponent {
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));
     
-    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/${this.type}/rename`, "", (value) => {
+    this.mqttService.getUpdate(responseTopic, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.isInvalid = true;
@@ -100,13 +105,17 @@ export class ModalComponent {
       } else {
         this.isInvalid = false;
         this.closeModal();
+        this.unsubscribe(responseTopic);
       }
     });
   }
   
   deleteItem(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/${this.type}/remove`;
+    const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/remove`;
     let message;
+
+    this.oldName=this.name;
   
     this.deleting=true;
   
@@ -114,7 +123,7 @@ export class ModalComponent {
   
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
-    this.mqttService.getUpdate(`${this.baseTopic}/bridge/response/${this.type}/remove`, "", (value) => {
+    this.mqttService.getUpdate(responseTopic, "", (value) => {
       if(value.error){
         console.log(value.error);
         this.cantRemove = true;
@@ -122,12 +131,18 @@ export class ModalComponent {
       } else {
         this.cantRemove = false;
         this.closeModal();
+        this.unsubscribe(responseTopic);
         if(this.type=="device"){
           this.location.back();
         }
       }
       this.deleting=false;
     });
+  }
+
+  unsubscribe(topic:string){
+    this.mqttService.unsubscribe(topic);
+    this.mqttService.unsubscribe(`${this.baseTopic}/${this.oldName}`);
   }
   
   resetModal(){
