@@ -151,6 +151,21 @@ export class MqttService {
         } else {
           // console.log(`Subscribed to topic: ${topic}`);
           this.topicSubscriptions.add(topic);
+          console.log(this.topicSubscriptions);
+        }
+      });
+    }
+  }
+
+  public unsubscribe(topic: string): void {
+    if (this.client && this.client.connected && this.topicSubscriptions.has(topic)) {
+      this.client.unsubscribe(topic, (err) => {
+        if (err) {
+          console.error(`Unsubscription error for topic ${topic}`, err);
+        } else {
+          // console.log(`Unsubscribed to topic: ${topic}`);
+          this.topicSubscriptions.delete(topic);
+          console.log(this.topicSubscriptions);
         }
       });
     }
