@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center small">
+<div class="d-flex align-items-center small" [ngClass]="{ 'disabled': !isBridgeOnline }">
     <div class="flex-shrink-1 flex-grow-1">{{ control.label }}</div>
     <div class="flex-shrink-1">
       <ng-content></ng-content>

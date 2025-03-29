@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 import { MqttService } from '../../services/mqtt.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -20,8 +21,9 @@ export class ModalComponent {
   isInvalid: boolean = false;
   cantRemove: boolean = false;
   deleting: boolean = false;
-  joiningCountdown: number = 0;
   cantFind: boolean = false;
+  isBridgeOnline: boolean = false;
+  joiningCountdown: number = 0;
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
 
@@ -29,6 +31,17 @@ export class ModalComponent {
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
+    this.checkState();
+  }
+
+  checkState(){
+    this.mqttService.checkBridgeState().subscribe(isOnline => {
+      this.isBridgeOnline = isOnline;
+      this.cantFind=!isOnline;
+      this.isInvalid=!isOnline;
+      this.cantRemove=!isOnline;
+      this.invalidMessage = isOnline ? "" : "The bridge is offline. Please check your connection.";
+    });
   }
 
   addZigbee(){
@@ -125,6 +138,7 @@ export class ModalComponent {
     if(this.joiningCountdown>0){
       this.cancelJoin();
     }
+    this.checkState();
   }
 
   cancelJoin(){

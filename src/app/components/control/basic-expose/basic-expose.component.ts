@@ -14,19 +14,39 @@ export class BasicExposeComponent implements OnInit{
     @Input() compositeProperty!: string;
     accessArray!: string[];
     inputValue: any;
+    isBridgeOnline: boolean = false;
 
     constructor(public mqttService: MqttService) {}
   
     ngOnInit() {
+        this.setTopic(); 
+        this.setControlProperty();
+        this.listenForChange();
+        this.startState();
+    }
+
+    ngAfterViewInit(){
+        this.checkState();
+    }
+
+    setTopic() {
         if(!this.topic){
             this.topic = `${this.mqttService.getBaseTopic()}/${this.friendly_name}`;
         }
+    }
+    
+    setControlProperty(){
         if (this.compositeProperty!=null) {
             console.log(this.compositeProperty);
             this.control.property= `${this.compositeProperty}/${this.control.property}`;
         }
-        this.listenForChange();
-        this.startState();
+    }
+
+    checkState(){
+        this.mqttService.checkBridgeState().subscribe(isOnline => {
+          this.isBridgeOnline = isOnline;
+        //   this.invalidMessage = isOnline ? "" : "The bridge is offline. Please check your connection.";
+        });
     }
 
     getAccess(): string[] {

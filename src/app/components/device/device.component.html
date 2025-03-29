@@ -46,6 +46,11 @@
       
       <ng-content></ng-content>
       
+      <div *ngIf="!isBridgeOnline" class="text-danger">
+        <i class="bi bi-x-circle me-2"></i>
+        The bridge is offline. Please check your connection.
+      </div>
+      
     </div>
   </div>
 

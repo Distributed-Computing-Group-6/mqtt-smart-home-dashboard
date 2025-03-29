@@ -15,8 +15,11 @@ export class MqttService {
   private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private groupsSubject = new BehaviorSubject<any[]>([]);
+  private stateSubject = new BehaviorSubject<boolean>(false);
   private topicSubscriptions: Set<string> = new Set();
   private topicCallbackMap: { [key: string]: { property: string, callback: Function }[] } = {};
+  private countdownSubject = new BehaviorSubject<number>(0);
+  public countdown$ = this.countdownSubject.asObservable();
 
   constructor(private router: Router, private encryptService: EncryptService) {
     this.checkStoredCredentials();
@@ -47,6 +50,16 @@ export class MqttService {
     }
   }  
 
+  public checkBridgeState(): Observable<boolean> {
+    const topic = `${this.baseTopic}/bridge/state`;
+  
+    this.getUpdate(topic, "", (message: { state: string }) => {
+      this.stateSubject.next(message.state === 'online');
+    });
+  
+    return this.stateSubject.asObservable();
+  }
+
   public connectToBroker(username: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.baseTopic = `zigbee2mqtt/${username.split('-')[0]}`
@@ -61,6 +74,7 @@ export class MqttService {
         // console.log('Connected to MQTT broker');
 
         this.initializeMessageListener();
+        this.checkBridgeState();
         resolve(true);
       });
   
@@ -156,6 +170,25 @@ export class MqttService {
     }
   }
 
+  // private startCountdown() {
+  //   let countdown = 30;
+  //   const countdownInterval = setInterval(() => {
+  //     if (countdown > 0) {
+  //       this.countdownSubject.next(countdown);
+  //       countdown--;
+  //     } else {
+  //       clearInterval(countdownInterval);
+  //       this.countdownSubject.next(0);
+  //       this.stateSubject.next(false);
+  //     }
+  //   }, 1000);
+  // }
+
+  // private stopCountdown() {
+  //   this.countdownSubject.next(0);
+  //   this.stateSubject.next(true);
+  // }
+
   public publish(topic: string, message: string): void {
     if (this.client && this.client.connected) {
       this.client.publish(topic, message, {}, (err) => {
@@ -163,6 +196,7 @@ export class MqttService {
           console.error(`Publish error to topic ${topic}`, err);
         } else {
           console.log(`Message published to ${topic}: ${message}`);
+          // this.startCountdown();
         }
       });
     }
@@ -172,6 +206,7 @@ export class MqttService {
     try {
       const parsedMessage = JSON.parse(message.toString());
       console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      // this.stopCountdown();
 
       if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
         this.devicesSubject.next(parsedMessage);

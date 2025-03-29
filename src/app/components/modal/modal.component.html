@@ -17,10 +17,10 @@
               </div>
           </div>
       </div>
-      <div *ngIf="cantFind" class="modal-body is-invalid">
-        {{invalidMessage}}
+      <div *ngIf="cantFind" class="modal-body">
+        <span class="text-danger">{{ invalidMessage }}</span>
       </div>  
-      <div *ngIf="joinedDevices.length>0" class="modal-body is-valid">
+      <div *ngIf="joinedDevices.length>0" class="modal-body">
           Found Devices
           <ul>
           <li *ngFor="let device of joinedDevices">
@@ -30,7 +30,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-        <button type="button" (click)="addZigbee()" class="btn btn-primary">Allows Zigbee Devices to Join</button>
+        <button type="button" (click)="addZigbee()" [disabled]="!isBridgeOnline" class="btn btn-primary">
+          Allow Zigbee Devices to Join
+        </button>
       </div>
       
       </ng-container>
@@ -56,7 +58,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" (click)="closeModal()" >Close</button>
-              <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Save changes</button>
+              <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid||!isBridgeOnline">Save changes</button>
             </div>
           </form>
         </div>
@@ -76,7 +78,7 @@
       
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-        <button type="button" (click)="deleteItem()" class="btn btn-danger">
+        <button type="button" (click)="deleteItem()" [disabled]="!isBridgeOnline" class="btn btn-danger">
           {{ !cantRemove ? "Confirm Delete" : "Force Delete" }}
         </button>
     </div>
