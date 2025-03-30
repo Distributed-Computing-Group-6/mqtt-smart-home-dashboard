@@ -8,7 +8,7 @@
       <h4 class="card-title mb-0 d-flex align-items-center">
         <span *ngIf="!isDeviceOnline" class="offline-icon me-2">
           <i class="bi bi-x-circle"></i>
-          <span class="offline-tooltip">The device is offline.</span>
+          <span class="offline-tooltip">'{{ device.friendly_name }}' is offline.</span>
         </span>
         <a [routerLink]="['/device', device.ieee]" class="text-decoration-none text-dark">
           {{ device.friendly_name }}
