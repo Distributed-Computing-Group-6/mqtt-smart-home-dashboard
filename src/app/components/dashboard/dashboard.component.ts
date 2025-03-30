@@ -18,13 +18,17 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getCards();
     this.checkState();
-    }
+  }
+
+  ngOnDestroy() {
+    this.mqttService.unsubscribe(`${this.mqttService.getBaseTopic()}/bridge/devices`);
+  }
     
-    checkState(){
-      this.mqttService.checkBridgeState().subscribe(isOnline => {
-        this.isBridgeOnline = isOnline;
-      });
-    }
+  checkState(){
+    this.mqttService.checkBridgeState().subscribe(isOnline => {
+      this.isBridgeOnline = isOnline;
+    });
+  }
 
   getCards() {
     this.id = this.route.snapshot.paramMap.get('groupId');
@@ -46,7 +50,7 @@ export class DashboardComponent implements OnInit {
   }
   
   public setDevices(devices: any[]) {
-    this.devices = devices;      
+    this.devices = devices;   
     // this.devices.push({
     //     "friendly_name": "Color",
     //     "controls": [
