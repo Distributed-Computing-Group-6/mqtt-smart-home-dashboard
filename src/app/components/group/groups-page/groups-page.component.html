@@ -1,18 +1,9 @@
-<div class="container">
-  <!-- Bridge Offline Message -->
-  <div *ngIf="!isBridgeOnline" class="alert alert-danger d-flex align-items-center mt-3">
-    <i class="bi bi-x-circle me-2"></i>
-    <span>The bridge is offline. Please check your connection.</span>
-  </div>
-  
-  <!-- Groups List -->
-    <div class="row justify-content-center">
-        <ng-container *ngFor="let group of groups">
-            <app-group-card class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
-                        [group]="group"
-                        [isBridgeOnline]="isBridgeOnline">
-            </app-group-card>
-          </ng-container>
-    </div>
-  </div>
-  
+<!-- Groups List -->
+<div class="row justify-content-center">
+  <ng-container *ngFor="let group of groups">
+    <app-group-card class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
+                [group]="group"
+                [isBridgeOnline]="isBridgeOnline">
+    </app-group-card>
+  </ng-container>
+</div>

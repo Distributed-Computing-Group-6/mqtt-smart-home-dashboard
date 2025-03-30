@@ -18,11 +18,11 @@ export class GroupsPageComponent {
     this.checkState();
     }
     
-    checkState(){
-      this.mqttService.checkBridgeState().subscribe(isOnline => {
-        this.isBridgeOnline = isOnline;
-      });
-    }
+  checkState(){
+    this.mqttService.checkBridgeState().subscribe(isOnline => {
+      this.isBridgeOnline = isOnline;
+    });
+  }
 
   getCards() {
     this.mqttService.getGroups().subscribe(groups => {

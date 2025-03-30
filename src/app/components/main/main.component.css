@@ -1,4 +1,4 @@
-router-outlet {
+.container {
   display: block;
   margin-top: 70px; 
 }
@@ -13,7 +13,7 @@ app-footer {
 }
 
 @media (max-width: 992px) {
-  router-outlet {
+  .container {
     margin-top: 50px;
   }
 }

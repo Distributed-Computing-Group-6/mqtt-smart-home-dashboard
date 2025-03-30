@@ -23,12 +23,14 @@ export class DeviceComponent implements OnInit {
   }
 
   checkState(){
+    const availability = `${this.mqttService.getBaseTopic()}/${this.device.friendly_name}/availability`;
     // this.mqttService.checkBridgeState().subscribe(isOnline => {
     //   this.isBridgeOnline = isOnline;
     // });
-    // this.mqttService.getUpdate(`${this.mqttService.getBaseTopic()}/${this.device.friendly_name}/availability`, "", (value) => {
-    //   this.isDeviceOnline=value.state!=='offline';
-    // });
+    this.mqttService.getUpdate(availability, "", (value) => {
+      this.isDeviceOnline=value.state!=='offline';
+      this.mqttService.unsubscribe(availability);
+    });
   }
 
   openRenameModal() {
