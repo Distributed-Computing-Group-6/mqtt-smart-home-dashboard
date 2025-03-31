@@ -19,10 +19,6 @@ export class DashboardComponent implements OnInit {
     this.getCards();
     this.checkState();
   }
-
-  ngOnDestroy() {
-    this.mqttService.unsubscribe(`${this.mqttService.getBaseTopic()}/bridge/devices`);
-  }
     
   checkState(){
     this.mqttService.checkBridgeState().subscribe(isOnline => {

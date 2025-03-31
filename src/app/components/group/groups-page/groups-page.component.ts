@@ -17,10 +17,6 @@ export class GroupsPageComponent {
     this.getCards();
     this.checkState();
   }
-
-  ngOnDestroy() {
-    this.mqttService.unsubscribe(`${this.mqttService.getBaseTopic()}/bridge/groups`);
-  }
     
   checkState(){
     this.mqttService.checkBridgeState().subscribe(isOnline => {
