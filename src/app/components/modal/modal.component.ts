@@ -167,8 +167,13 @@ export class ModalComponent {
     this.modalService.open(this.modalContent, { backdrop: 'static', keyboard: false });
   }    
 
-  closeModal() {
-    this.resetModal();
+  async closeModal() {
+    this.resetModal();    
+    await Promise.all([
+      this.mqttService.unsubscribe(`${this.baseTopic}/bridge/event`),
+      this.mqttService.unsubscribe(`${this.baseTopic}/bridge/response/${this.type}/rename`),
+      this.mqttService.unsubscribe(`${this.baseTopic}/bridge/response/${this.type}/remove`)
+    ]);
     this.modalService.dismissAll();
   }
 }

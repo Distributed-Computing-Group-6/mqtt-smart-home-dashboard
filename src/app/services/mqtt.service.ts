@@ -179,6 +179,7 @@ export class MqttService {
         } else {
           console.log(`Subscribed to topic: ${topic}`);
           this.topicSubscriptions.add(topic);
+          // console.log(this.topicSubscriptions);
         }
       });
     }
@@ -187,6 +188,20 @@ export class MqttService {
   public clearRetain(topic: string): void {
     this.client.publish(topic, '', { retain: true });
   }
+
+  public unsubscribe(topic: string): void {
+    if (this.client && this.client.connected && this.topicSubscriptions.has(topic)) {
+      this.client.unsubscribe(topic, (err) => {
+        if (err) {
+          console.error(`Unsubscription error for topic ${topic}`, err);
+        } else {
+          console.log(`Unsubscribed to topic: ${topic}`);
+          this.topicSubscriptions.delete(topic);
+          // console.log(this.topicSubscriptions);
+        }
+      });
+    }
+  }  
 
   public publish(topic: string, message: string): void {
     if (this.client && this.client.connected) {
@@ -234,8 +249,6 @@ export class MqttService {
       this.subscribe(`${this.baseTopic}/+/availability`)
     } else if (topic.includes(this.baseTopic)&&!topic.includes('/bridge')){
       this.subscribe(`${this.baseTopic}/+`)
-    } else if (topic.includes('/bridge/response')){
-      this.subscribe(`${this.baseTopic}/bridge/response/+`)
     } else {
       this.subscribe(topic);
     }
