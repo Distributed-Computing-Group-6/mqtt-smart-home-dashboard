@@ -26,7 +26,6 @@ export class ModalComponent {
   joiningCountdown: number = 0;
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
-  oldName!: string;
 
   constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location) {}
 
