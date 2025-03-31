@@ -16,6 +16,7 @@ export class MqttService {
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private groupsSubject = new BehaviorSubject<any[]>([]);
   private stateSubject = new BehaviorSubject<boolean>(false);
+  private deviceStateSubject = new BehaviorSubject<Map<string, boolean>>(new Map());
   private topicSubscriptions: Set<string> = new Set();
   private topicCallbackMap: { [key: string]: { property: string, callback: Function }[] } = {};
   private countdownSubject = new BehaviorSubject<number>(0);
@@ -59,6 +60,19 @@ export class MqttService {
   
     return this.stateSubject.asObservable();
   }
+
+  public checkDeviceState(topic: string, deviceName: string): Observable<Map<string, boolean>> {
+    this.getUpdate(topic, "", (message: { state: string }) => {
+      const currentStates = this.deviceStateSubject.getValue();
+  
+      currentStates.set(deviceName, (message.state === 'online'));
+  
+      this.deviceStateSubject.next(new Map(currentStates));
+    });
+  
+    return this.deviceStateSubject.asObservable();
+  }
+  
 
   public connectToBroker(username: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -165,7 +179,6 @@ export class MqttService {
         } else {
           console.log(`Subscribed to topic: ${topic}`);
           this.topicSubscriptions.add(topic);
-          console.log(this.topicSubscriptions);
         }
       });
     }
@@ -191,7 +204,9 @@ export class MqttService {
     try {
       const parsedMessage = JSON.parse(message.toString());
       
-      console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      if (!receivedTopic.includes('/availability')) {
+        console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      }
 
       if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
         this.devicesSubject.next(parsedMessage);
@@ -228,7 +243,7 @@ export class MqttService {
     if (!this.topicCallbackMap[topic]) {
       this.topicCallbackMap[topic] = [];
     }
-  
+    
     this.topicCallbackMap[topic].push({ property, callback });
   }
 
