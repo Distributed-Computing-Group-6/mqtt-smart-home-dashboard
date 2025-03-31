@@ -31,7 +31,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
         <button type="button" (click)="addZigbee()" [disabled]="!isBridgeOnline" class="btn btn-primary">
-          Allow Zigbee Devices to Join
+          {{ joiningCountdown > 0 ? "Disable Zigbee Devices to Join" : "Allow Zigbee Devices to Join"}}
         </button>
       </div>
       

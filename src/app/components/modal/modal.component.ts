@@ -52,7 +52,12 @@ export class ModalComponent {
 
     this.joinedDevices = [];
 
-    this.joiningCountdown=joinTime;
+    if(this.joiningCountdown > 0){
+      this.cancelJoin();
+      return;
+    } else {
+      this.joiningCountdown=joinTime;
+    }
 
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
