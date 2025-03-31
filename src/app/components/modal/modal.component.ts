@@ -87,8 +87,7 @@ export class ModalComponent {
   
     const stateTopic:string = `${this.baseTopic}/bridge/request/${this.type}/rename`;
     const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/rename`;
-
-    this.oldName=this.name;
+    let oldName = this.name;
 
     let message = {
       from: this.name,
@@ -105,7 +104,7 @@ export class ModalComponent {
       } else {
         this.isInvalid = false;
         this.closeModal();
-        this.unsubscribe(responseTopic);
+        this.unsubscribe(oldName);
       }
     });
   }
@@ -113,9 +112,8 @@ export class ModalComponent {
   deleteItem(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/${this.type}/remove`;
     const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/remove`;
+    let oldName = this.name;
     let message;
-
-    this.oldName=this.name;
   
     this.deleting=true;
   
@@ -131,7 +129,7 @@ export class ModalComponent {
       } else {
         this.cantRemove = false;
         this.closeModal();
-        this.unsubscribe(responseTopic);
+        this.unsubscribe(oldName);
         if(this.type=="device"){
           this.location.back();
         }
@@ -140,9 +138,8 @@ export class ModalComponent {
     });
   }
 
-  unsubscribe(topic:string){
-    this.mqttService.unsubscribe(topic);
-    this.mqttService.unsubscribe(`${this.baseTopic}/${this.oldName}`);
+  unsubscribe(oldName:string){
+    this.mqttService.clearRetain(`${this.baseTopic}/${oldName}/availability`)
   }
   
   resetModal(){

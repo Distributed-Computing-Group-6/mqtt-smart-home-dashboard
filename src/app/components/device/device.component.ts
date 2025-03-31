@@ -29,7 +29,7 @@ export class DeviceComponent implements OnInit {
     // });
     this.mqttService.getUpdate(availability, "", (value) => {
       this.isDeviceOnline=value.state!=='offline';
-      this.mqttService.unsubscribe(availability);
+      // this.mqttService.unsubscribe(availability);
     });
   }
 

@@ -31,7 +31,7 @@ export class MqttService {
     if (credentials) {
       this.connectToBroker(credentials.username, credentials.password).then(isConnected => {
         if (isConnected) {
-          // console.log('Reconnected to MQTT broker.');
+          console.log('Reconnected to MQTT broker.');
           this.router.navigate(['/']);
         } else {
           console.warn('Reconnection failed, prompting for login.');
@@ -71,7 +71,7 @@ export class MqttService {
       });
   
       this.client.on('connect', () => {
-        // console.log('Connected to MQTT broker');
+        console.log('Connected to MQTT broker');
 
         this.initializeMessageListener();
         this.checkBridgeState();
@@ -88,7 +88,7 @@ export class MqttService {
   public disconnectFromBroker(): void {
     if (this.client) {
       this.client.end();
-      // console.log('Disconnected from MQTT broker');
+      console.log('Disconnected from MQTT broker');
     }
   }
   public isConnected(): boolean {
@@ -163,45 +163,17 @@ export class MqttService {
         if (err) {
           console.error(`Subscription error for topic ${topic}`, err);
         } else {
-          // console.log(`Subscribed to topic: ${topic}`);
+          console.log(`Subscribed to topic: ${topic}`);
           this.topicSubscriptions.add(topic);
-        }
-      });
-    }
-  }  
-  
-  public unsubscribe(topic: string): void {
-    if (this.client && this.client.connected && this.topicSubscriptions.has(topic)) {
-      this.client.unsubscribe(topic, (err) => {
-        if (err) {
-          console.error(`Unsubscription error for topic ${topic}`, err);
-        } else {
-          // console.log(`Unsubscribed to topic: ${topic}`);
-          this.topicSubscriptions.delete(topic);
           console.log(this.topicSubscriptions);
         }
       });
     }
+  }  
+
+  public clearRetain(topic: string): void {
+    this.client.publish(topic, '', { retain: true });
   }
-
-  // private startCountdown() {
-  //   let countdown = 30;
-  //   const countdownInterval = setInterval(() => {
-  //     if (countdown > 0) {
-  //       this.countdownSubject.next(countdown);
-  //       countdown--;
-  //     } else {
-  //       clearInterval(countdownInterval);
-  //       this.countdownSubject.next(0);
-  //       this.stateSubject.next(false);
-  //     }
-  //   }, 1000);
-  // }
-
-  // private stopCountdown() {
-  //   this.countdownSubject.next(0);
-  //   this.stateSubject.next(true);
-  // }
 
   public publish(topic: string, message: string): void {
     if (this.client && this.client.connected) {
@@ -210,7 +182,6 @@ export class MqttService {
           console.error(`Publish error to topic ${topic}`, err);
         } else {
           console.log(`Message published to ${topic}: ${message}`);
-          // this.startCountdown();
         }
       });
     }
@@ -219,8 +190,8 @@ export class MqttService {
   private handleMessage(receivedTopic: string, message: Buffer): void { 
     try {
       const parsedMessage = JSON.parse(message.toString());
+      
       console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
-      // this.stopCountdown();
 
       if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
         this.devicesSubject.next(parsedMessage);
@@ -244,8 +215,16 @@ export class MqttService {
   }
   
   public getUpdate(topic: string, property: string, callback: (data: any) => void): void {
-    this.subscribe(topic);
-
+    if (topic.includes('/availability')){
+      this.subscribe(`${this.baseTopic}/+/availability`)
+    } else if (topic.includes(this.baseTopic)&&!topic.includes('/bridge')){
+      this.subscribe(`${this.baseTopic}/+`)
+    } else if (topic.includes('/bridge/response')){
+      this.subscribe(`${this.baseTopic}/bridge/response/+`)
+    } else {
+      this.subscribe(topic);
+    }
+    
     if (!this.topicCallbackMap[topic]) {
       this.topicCallbackMap[topic] = [];
     }
