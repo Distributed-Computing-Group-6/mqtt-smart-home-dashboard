@@ -1,12 +1,48 @@
 <app-basic-expose [control]="control">
-    <div class="slider-container">
-        <label for="slider" class="label-spacing">{{ inputValue }}  </label>
-        <span [ngClass]="{'temp_gradient':control.unit=='mired'}">
-            <input type="range" id="slider"
-               [(ngModel)]="inputValue" 
-               (change)="stateChange()"
-               [min]="minValue" [max]="maxValue" step="1"
-               [disabled]="!canWrite()">
-        </span>
+    <div class="d-flex w-100 align-items-center justify-content-between">
+        <!-- Presets Section -->
+        <div *ngIf="control.presets" class="d-flex flex-grow-1 justify-content-center gap-2">
+            <div *ngIf="isCompact && !isCard" class="btn-group btn-group-sm btn-group-toggle w-100" data-toggle="buttons">
+              <button 
+                *ngFor="let preset of control.presets" 
+                class="btn w-100" 
+                (click)="setValue(preset.value)" 
+                [disabled]="!canWrite()" 
+                [ngClass]="{'btn-secondary': inputValue == preset.value||inputName == preset.name, 'btn-outline-secondary': !(inputValue == preset.value||inputName == preset.name)}">
+                {{ preset.name }}
+              </button>
+            </div>  
+            <div *ngIf="!isCompact && !isCard" class="dropdown col">
+              <button 
+                type="button" 
+                class="btn btn-secondary btn-sm" 
+                [ngClass]="{'dropdown-toggle': canWrite(),
+                'form-control-plaintext':!canWrite()}"
+                data-bs-toggle="dropdown" 
+                aria-haspopup="true" 
+                aria-expanded="false"
+                [disabled]="!canWrite()">
+                {{ inputName||"Not Selected" }}
+              </button>
+              <ng-container *ngIf="canWrite()">
+                <div class="dropdown-menu">
+                  <ng-container *ngFor="let preset of control.presets">
+                    <a class="dropdown-item" (click)="setValue(preset.value)">{{ preset.name }}</a>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </div>
+        </div>
+        <!-- Slider -->
+        <div class="slider-container d-flex align-items-center flex-shrink-0 ms-3">
+            <label for="slider" class="label-spacing">{{ inputValue }}  </label>
+            <span [ngClass]="{'temp_gradient':control.unit=='mired'}">
+                <input type="range" id="slider"
+                   [(ngModel)]="inputValue" 
+                   (change)="stateChange()"
+                   [min]="minValue" [max]="maxValue" step="1"
+                   [disabled]="!canWrite()">
+            </span>
+        </div>
     </div>
 </app-basic-expose>

@@ -39,7 +39,6 @@ export class EnumComponent extends BasicExposeComponent {
   }
 
   checkScreenSize() {
-    // You can change this breakpoint to suit your design
     if(window.innerWidth < 480){
       this.isCompact = this.control.values.length<=1;
     } else if(window.innerWidth < 768){
