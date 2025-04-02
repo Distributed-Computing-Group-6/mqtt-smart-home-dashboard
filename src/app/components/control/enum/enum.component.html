@@ -19,7 +19,7 @@
       aria-haspopup="true" 
       aria-expanded="false"
       [disabled]="!canWrite()">
-      {{ inputValue }}
+      {{ inputValue||"Not Selected" }}
     </button>
     <ng-container *ngIf="canWrite()">
       <div class="dropdown-menu">

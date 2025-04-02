@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>   
-    <div class="row card-body justify-content-center">
+    <div class="row card-body justify-content-center" [ngClass]="{ 'disabled': (!isBridgeOnline) }">
       <!-- <app-composite friendly_name="Whole Group" [topic]="topic" [control]="group.members[0]" [isCard]="true" type="group"></app-composite> -->
       <div *ngFor="let device of group.members">
         <app-composite [friendly_name]="device.friendly_name" [control]="device" [isCard]="true" type="group"></app-composite>

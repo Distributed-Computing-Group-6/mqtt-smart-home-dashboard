@@ -1,20 +1,28 @@
 
   <div class="flex-fill card flex-shrink-1" 
   [ngClass]="{'dash-card': isCard, 'page': !isCard,}">
-  <div class="card-header pb-0">
+  <div class="card-header py-6">
     <div class="d-flex align-items-center justify-content-between">
-      <h4 class="card-title mb-0">
+    <ng-content select="[header-content]"></ng-content>
+
+      <h4 class="card-title mb-0 d-flex align-items-center">
+        <span *ngIf="!isDeviceOnline" class="offline-icon me-2">
+          <i class="bi bi-x-circle"></i>
+          <span class="offline-tooltip">'{{ device.friendly_name }}' is offline.</span>
+        </span>
         <a [routerLink]="['/device', device.ieee]" class="text-decoration-none text-dark">
           {{ device.friendly_name }}
         </a>
       </h4>
+      
       <div *ngIf="!isCard" class="btn-group btn-group-sm">
         <button class="btn btn-secondary" (click)="openRenameModal()"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-danger" (click)="openDeleteModal()"><i class="bi bi-trash3"></i></button>
       </div>
     </div>
-  </div>    
-    <div class="row card-body justify-content-center">
+  </div>
+     
+    <div class="row card-body justify-content-center" [ngClass]="{ 'disabled': (!isBridgeOnline||!isDeviceOnline) }">
       <ng-container *ngFor="let control of device.controls" [ngSwitch]="control.type">
         
         <ng-container *ngSwitchCase="'binary'">
@@ -45,7 +53,10 @@
       </ng-container>
       
       <ng-content></ng-content>
-      
+      <!-- <div *ngIf="!isDeviceOnline" class="text-danger">
+        <i class="bi bi-x-circle me-2"></i>
+        The device is offline. Please check your connection.
+      </div> -->
     </div>
   </div>
 

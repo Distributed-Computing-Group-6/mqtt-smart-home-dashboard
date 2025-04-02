@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 import { MqttService } from '../../services/mqtt.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -20,8 +21,9 @@ export class ModalComponent {
   isInvalid: boolean = false;
   cantRemove: boolean = false;
   deleting: boolean = false;
-  joiningCountdown: number = 0;
   cantFind: boolean = false;
+  isBridgeOnline: boolean = false;
+  joiningCountdown: number = 0;
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
   oldName!: string;
@@ -30,6 +32,17 @@ export class ModalComponent {
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
+    this.checkState();
+  }
+
+  checkState(){
+    this.mqttService.checkBridgeState().subscribe(isOnline => {
+      this.isBridgeOnline = isOnline;
+      this.cantFind=!isOnline;
+      this.isInvalid=!isOnline;
+      this.cantRemove=!isOnline;
+      this.invalidMessage = isOnline ? "" : "The bridge is offline. Please check your connection.";
+    });
   }
 
   addZigbee(){
@@ -40,7 +53,12 @@ export class ModalComponent {
 
     this.joinedDevices = [];
 
-    this.joiningCountdown=joinTime;
+    if(this.joiningCountdown > 0){
+      this.cancelJoin();
+      return;
+    } else {
+      this.joiningCountdown=joinTime;
+    }
 
     console.log(message);
     this.mqttService.publish(stateTopic,JSON.stringify(message));    
@@ -74,8 +92,7 @@ export class ModalComponent {
   
     const stateTopic:string = `${this.baseTopic}/bridge/request/${this.type}/rename`;
     const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/rename`;
-
-    this.oldName=this.name;
+    let oldName = this.name;
 
     let message = {
       from: this.name,
@@ -92,7 +109,7 @@ export class ModalComponent {
       } else {
         this.isInvalid = false;
         this.closeModal();
-        this.unsubscribe(responseTopic);
+        this.unsubscribe(oldName);
       }
     });
   }
@@ -100,6 +117,7 @@ export class ModalComponent {
   deleteItem(){
     const stateTopic:string = `${this.baseTopic}/bridge/request/${this.type}/remove`;
     const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/remove`;
+    let oldName = this.name;
     let message;
 
     this.oldName=this.name;
@@ -118,7 +136,7 @@ export class ModalComponent {
       } else {
         this.cantRemove = false;
         this.closeModal();
-        this.unsubscribe(responseTopic);
+        this.unsubscribe(oldName);
         if(this.type=="device"){
           this.location.back();
         }
@@ -127,9 +145,8 @@ export class ModalComponent {
     });
   }
 
-  unsubscribe(topic:string){
-    this.mqttService.unsubscribe(topic);
-    this.mqttService.unsubscribe(`${this.baseTopic}/${this.oldName}`);
+  unsubscribe(oldName:string){
+    this.mqttService.clearRetain(`${this.baseTopic}/${oldName}/availability`)
   }
 
   resetModal(){
@@ -140,6 +157,7 @@ export class ModalComponent {
     if(this.joiningCountdown>0){
       this.cancelJoin();
     }
+    this.checkState();
   }
 
   cancelJoin(){
@@ -157,8 +175,13 @@ export class ModalComponent {
     this.modalService.open(this.modalContent, { backdrop: 'static', keyboard: false });
   }    
 
-  closeModal() {
-    this.resetModal();
+  async closeModal() {
+    this.resetModal();    
+    await Promise.all([
+      this.mqttService.unsubscribe(`${this.baseTopic}/bridge/event`),
+      this.mqttService.unsubscribe(`${this.baseTopic}/bridge/response/${this.type}/rename`),
+      this.mqttService.unsubscribe(`${this.baseTopic}/bridge/response/${this.type}/remove`)
+    ]);
     this.modalService.dismissAll();
   }
 }

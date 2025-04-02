@@ -1,0 +1,4 @@
+.no-disable {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+  }

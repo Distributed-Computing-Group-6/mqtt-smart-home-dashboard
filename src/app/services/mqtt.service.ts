@@ -15,8 +15,12 @@ export class MqttService {
   private baseTopic : string = "";
   private devicesSubject = new BehaviorSubject<any[]>([]);
   private groupsSubject = new BehaviorSubject<any[]>([]);
+  private stateSubject = new BehaviorSubject<boolean>(false);
+  private deviceStateSubject = new BehaviorSubject<Map<string, boolean>>(new Map());
   private topicSubscriptions: Set<string> = new Set();
   private topicCallbackMap: { [key: string]: { property: string, callback: Function }[] } = {};
+  private countdownSubject = new BehaviorSubject<number>(0);
+  public countdown$ = this.countdownSubject.asObservable();
 
   constructor(private router: Router, private encryptService: EncryptService) {
     this.checkStoredCredentials();
@@ -28,7 +32,7 @@ export class MqttService {
     if (credentials) {
       this.connectToBroker(credentials.username, credentials.password).then(isConnected => {
         if (isConnected) {
-          // console.log('Reconnected to MQTT broker.');
+          console.log('Reconnected to MQTT broker.');
           this.router.navigate(['/']);
         } else {
           console.warn('Reconnection failed, prompting for login.');
@@ -47,6 +51,29 @@ export class MqttService {
     }
   }  
 
+  public checkBridgeState(): Observable<boolean> {
+    const topic = `${this.baseTopic}/bridge/state`;
+  
+    this.getUpdate(topic, "", (message: { state: string }) => {
+      this.stateSubject.next(message.state === 'online');
+    });
+  
+    return this.stateSubject.asObservable();
+  }
+
+  public checkDeviceState(topic: string, deviceName: string): Observable<Map<string, boolean>> {
+    this.getUpdate(topic, "", (message: { state: string }) => {
+      const currentStates = this.deviceStateSubject.getValue();
+  
+      currentStates.set(deviceName, (message.state === 'online'));
+  
+      this.deviceStateSubject.next(new Map(currentStates));
+    });
+  
+    return this.deviceStateSubject.asObservable();
+  }
+  
+
   public connectToBroker(username: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.baseTopic = `zigbee2mqtt/${username.split('-')[0]}`
@@ -58,9 +85,10 @@ export class MqttService {
       });
   
       this.client.on('connect', () => {
-        // console.log('Connected to MQTT broker');
+        console.log('Connected to MQTT broker');
 
         this.initializeMessageListener();
+        this.checkBridgeState();
         resolve(true);
       });
   
@@ -74,7 +102,7 @@ export class MqttService {
   public disconnectFromBroker(): void {
     if (this.client) {
       this.client.end();
-      // console.log('Disconnected from MQTT broker');
+      console.log('Disconnected from MQTT broker');
     }
   }
   public isConnected(): boolean {
@@ -149,12 +177,16 @@ export class MqttService {
         if (err) {
           console.error(`Subscription error for topic ${topic}`, err);
         } else {
-          // console.log(`Subscribed to topic: ${topic}`);
+          console.log(`Subscribed to topic: ${topic}`);
           this.topicSubscriptions.add(topic);
-          console.log(this.topicSubscriptions);
+          // console.log(this.topicSubscriptions);
         }
       });
     }
+  }  
+
+  public clearRetain(topic: string): void {
+    this.client.publish(topic, '', { retain: true });
   }
 
   public unsubscribe(topic: string): void {
@@ -163,13 +195,13 @@ export class MqttService {
         if (err) {
           console.error(`Unsubscription error for topic ${topic}`, err);
         } else {
-          // console.log(`Unsubscribed to topic: ${topic}`);
+          console.log(`Unsubscribed to topic: ${topic}`);
           this.topicSubscriptions.delete(topic);
-          console.log(this.topicSubscriptions);
+          // console.log(this.topicSubscriptions);
         }
       });
     }
-  }
+  }  
 
   public publish(topic: string, message: string): void {
     if (this.client && this.client.connected) {
@@ -186,7 +218,10 @@ export class MqttService {
   private handleMessage(receivedTopic: string, message: Buffer): void { 
     try {
       const parsedMessage = JSON.parse(message.toString());
-      console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      
+      if (!receivedTopic.includes('/availability')) {
+        console.log(`Message received on topic ${receivedTopic}:`, parsedMessage);
+      }
 
       if (receivedTopic === `${this.baseTopic}/bridge/devices`) {
         this.devicesSubject.next(parsedMessage);
@@ -210,12 +245,18 @@ export class MqttService {
   }
   
   public getUpdate(topic: string, property: string, callback: (data: any) => void): void {
-    this.subscribe(topic);
-
+    if (topic.includes('/availability')){
+      this.subscribe(`${this.baseTopic}/+/availability`)
+    } else if (topic.includes(this.baseTopic)&&!topic.includes('/bridge')){
+      this.subscribe(`${this.baseTopic}/+`)
+    } else {
+      this.subscribe(topic);
+    }
+    
     if (!this.topicCallbackMap[topic]) {
       this.topicCallbackMap[topic] = [];
     }
-  
+    
     this.topicCallbackMap[topic].push({ property, callback });
   }
 

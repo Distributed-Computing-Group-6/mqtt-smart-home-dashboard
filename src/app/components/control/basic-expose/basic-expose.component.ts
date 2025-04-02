@@ -18,15 +18,23 @@ export class BasicExposeComponent implements OnInit{
     constructor(public mqttService: MqttService) {}
   
     ngOnInit() {
+        this.setTopic(); 
+        this.setControlProperty();
+        this.listenForChange();
+        this.startState();
+    }
+
+    setTopic() {
         if(!this.topic){
             this.topic = `${this.mqttService.getBaseTopic()}/${this.friendly_name}`;
         }
+    }
+    
+    setControlProperty(){
         if (this.compositeProperty!=null) {
             console.log(this.compositeProperty);
             this.control.property= `${this.compositeProperty}/${this.control.property}`;
         }
-        this.listenForChange();
-        this.startState();
     }
 
     getAccess(): string[] {
