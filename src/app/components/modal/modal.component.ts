@@ -26,6 +26,7 @@ export class ModalComponent {
   joiningCountdown: number = 0;
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
+  oldName!: string;
 
   constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location) {}
 
@@ -118,6 +119,8 @@ export class ModalComponent {
     const responseTopic:string = `${this.baseTopic}/bridge/response/${this.type}/remove`;
     let oldName = this.name;
     let message;
+
+    this.oldName=this.name;
   
     this.deleting=true;
   
@@ -145,7 +148,7 @@ export class ModalComponent {
   unsubscribe(oldName:string){
     this.mqttService.clearRetain(`${this.baseTopic}/${oldName}/availability`)
   }
-  
+
   resetModal(){
     this.isInvalid = false;
     this.cantRemove = false;
