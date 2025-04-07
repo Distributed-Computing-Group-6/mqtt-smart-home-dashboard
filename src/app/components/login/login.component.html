@@ -33,7 +33,7 @@
                                 name="password" placeholder="Password"/>
                         </div>
                         <div *ngIf="invalidMessage" class="mb-3">
-                          <span class="text-danger" [innerHTML]="invalidMessage"></span>
+                            <span [ngClass]="{'text-success': invalidMessage==='Connecting...','text-danger': invalidMessage!=='Connecting...'}" [innerHTML]="invalidMessage"></span>
                         </div>     
                         <div class="mb-3">
                             <button class="btn d-block w-100" 
@@ -70,7 +70,7 @@
                                 name="password" placeholder="Password"/>
                         </div>  
                         <div *ngIf="invalidMessage" class="mb-3">
-                            <span class="text-danger" [innerHTML]="invalidMessage"></span>
+                            <span [ngClass]="{'text-success': invalidMessage==='Connecting...','text-danger': invalidMessage!=='Connecting...'}" [innerHTML]="invalidMessage"></span>
                         </div>                    
                         <div class="mb-3">
                             <button class="btn d-block w-100" 

@@ -105,19 +105,13 @@ export class MqttService {
 
   public connectToBroker(username: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
+      console.log('Attempting connection to broker:', this.mqttUrl);
 
-      if(username==''&&password==''){
-        console.log("no username");
-        this.client = mqtt.connect(this.mqttUrl, {
-          reconnectPeriod: 0, 
-        });
-      } else {
-        this.client = mqtt.connect(this.mqttUrl, {
-          username: username,
-          password: password,
-          reconnectPeriod: 0, 
-        });
-      }
+      this.client = mqtt.connect(this.mqttUrl, {
+        username: username,
+        password: password,
+        reconnectPeriod: 0, 
+      });
   
       this.client.on('connect', () => {
         console.log('Connected to MQTT broker');
@@ -129,6 +123,16 @@ export class MqttService {
   
       this.client.on('error', (err) => {
         console.error('MQTT Connection Error:', err);
+        reject(false);
+      });
+
+      this.client.on('close', () => {
+        console.log('MQTT connection closed');
+        reject(false);
+      });
+  
+      this.client.on('offline', () => {
+        console.log('MQTT client is offline');
         reject(false);
       });
     });
