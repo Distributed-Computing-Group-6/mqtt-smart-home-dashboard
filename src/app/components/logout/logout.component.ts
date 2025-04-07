@@ -15,13 +15,15 @@ export class LogoutComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.mqttService.disconnectFromBroker();
+    this.mqttService.logout();
     console.log('Disconnected from broker on logout');
   }
 
   onLogout() {
     this.encryptService.clearCredentials();
-    this.mqttService.disconnectFromBroker();
+    sessionStorage.removeItem('mqttBroker');
+    sessionStorage.removeItem('mqttBasicTopic');
+    this.mqttService.logout();
     console.log('Logged out and disconnected from broker');
     this.router.navigate(['/login']);
   }

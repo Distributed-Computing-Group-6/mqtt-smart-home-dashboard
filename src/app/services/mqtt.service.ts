@@ -26,8 +26,29 @@ export class MqttService {
     this.checkStoredCredentials();
   }
 
+  public logout(){
+    this.devicesSubject = new BehaviorSubject<any[]>([]);
+    this.groupsSubject = new BehaviorSubject<any[]>([]);
+    this.stateSubject = new BehaviorSubject<boolean>(false);
+    this.deviceStateSubject = new BehaviorSubject<Map<string, boolean>>(new Map());
+    this.topicSubscriptions = new Set();
+    this.topicCallbackMap = {};
+    this.countdownSubject = new BehaviorSubject<number>(0);
+    this.countdown$ = this.countdownSubject.asObservable();
+    this.disconnectFromBroker();
+  }
+
   private checkStoredCredentials() {
     const credentials = this.encryptService.getCredentials();
+
+    const localBroker = sessionStorage.getItem('mqttBroker');
+    const localBasicTopic = sessionStorage.getItem('mqttBasicTopic');
+
+    if(localBroker&&localBasicTopic){
+      console.log("local");
+      this.mqttUrl=localBroker;
+      this.baseTopic=localBasicTopic;
+    }
 
     if (credentials) {
       this.connectToBroker(credentials.username, credentials.password).then(isConnected => {
@@ -73,16 +94,30 @@ export class MqttService {
     return this.deviceStateSubject.asObservable();
   }
   
+  public setLocalBroker(localBroker:string,baseTopic:string):void{
+    this.mqttUrl = localBroker;
+    this.baseTopic = baseTopic;
+  }  
+  public setCloudBroker(username: string):void{
+    this.mqttUrl = environment.mqttUrl;
+    this.baseTopic = `zigbee2mqtt/${username.split('-')[0]}`;
+  }
 
   public connectToBroker(username: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.baseTopic = `zigbee2mqtt/${username.split('-')[0]}`
 
-      this.client = mqtt.connect(this.mqttUrl, {
-        username: username,
-        password: password,
-        reconnectPeriod: 0, 
-      });
+      if(username==''&&password==''){
+        console.log("no username");
+        this.client = mqtt.connect(this.mqttUrl, {
+          reconnectPeriod: 0, 
+        });
+      } else {
+        this.client = mqtt.connect(this.mqttUrl, {
+          username: username,
+          password: password,
+          reconnectPeriod: 0, 
+        });
+      }
   
       this.client.on('connect', () => {
         console.log('Connected to MQTT broker');
@@ -99,7 +134,7 @@ export class MqttService {
     });
   }
 
-  public disconnectFromBroker(): void {
+  private disconnectFromBroker(): void {
     if (this.client) {
       this.client.end();
       console.log('Disconnected from MQTT broker');
