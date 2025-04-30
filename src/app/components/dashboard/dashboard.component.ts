@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,18 +13,29 @@ export class DashboardComponent implements OnInit {
   public id!:string|null;
   public groupName!:string;
   public isBridgeOnline: boolean = false;
+  public isVirtualPage: boolean = false;
+  private virtualDevices = environment.virtualDevices;
 
   constructor(private mqttService: MqttService,private route: ActivatedRoute){}
 
   ngOnInit(): void {
-    this.getCards();
-    this.checkState();
+    if(this.route.snapshot.url[0].path!="virtual"){
+      this.getCards();
+      this.checkState();
+    } else {
+      this.setVirtualPage();
+    }
   }
     
   checkState(){
     this.mqttService.checkBridgeState().subscribe(isOnline => {
       this.isBridgeOnline = isOnline;
     });
+  }
+
+  setVirtualPage() {
+    this.isVirtualPage = true;
+    this.devices = this.virtualDevices;
   }
 
   getCards() {
@@ -47,79 +59,6 @@ export class DashboardComponent implements OnInit {
   
   public setDevices(devices: any[]) {
     this.devices = devices;   
-    this.devices.push({
-        "friendly_name": "Color",
-        "controls": [
-          {
-            "access": 7,
-            "description": "On/off state of this light",
-            "label": "State",
-            "name": "state",
-            "property": "state",
-            "type": "binary",
-            "value_off": "OFF",
-            "value_on": "ON",
-            "value_toggle": "TOGGLE"
-          },
-          {
-            "access": 7,
-            "description": "Brightness of this light",
-            "label": "Brightness",
-            "name": "brightness",
-            "property": "brightness",
-            "type": "numeric",
-            "value_max": 254,
-            "value_min": 0
-          },
-          {
-            "type": "composite",
-            "name": "color_xy",
-            "label": "Color xy",
-            "access": 2,
-            "property": "color",
-            "features": [
-              {
-                "type": "numeric",
-                "name": "x",
-                "label": "X",
-                "property": "x",
-                "access": 7
-              },
-              {
-                "type": "numeric",
-                "name": "y",
-                "label": "Y",
-                "property": "y",
-                "access": 7
-              }
-            ]
-          },
-          {
-            "type": "composite",
-            "name": "color_hs",
-            "label": "Color HS",
-            "access": 2,
-            "property": "color",
-            "features": [
-              {
-                "type": "numeric",
-                "name": "hue",
-                "label": "Hue",
-                "property": "hue",
-                "access": 7
-              },
-              {
-                "type": "numeric",
-                "name": "saturation",
-                "label": "Saturation",
-                "property": "saturation",
-                "access": 7
-              }
-            ]
-          }
-        ],
-        "type": "light"
-      });
     console.log(this.devices);
   }
 

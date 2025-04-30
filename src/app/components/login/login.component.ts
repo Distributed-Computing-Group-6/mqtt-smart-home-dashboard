@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { Router } from '@angular/router';
 import { EncryptService } from '../../services/encrypt.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -36,8 +37,11 @@ export class LoginComponent {
       if (isConnected) {
   
         this.encryptService.saveCredentials(_username, _password);
-  
-        this.router.navigate(['/']);
+        if(_username!==environment.guestUser.username){
+          this.router.navigate(['/']);
+        } else {
+          this.router.navigate(['/virtual']);
+        }
         return true;
       } else {
         console.error('Failed to connect to MQTT broker');
@@ -55,6 +59,7 @@ export class LoginComponent {
 
   onCloud() {
     this.mqttService.setCloudBroker(this.username);
+    console.log(this.username)
     this.onLogin();
   }
 
@@ -77,5 +82,12 @@ export class LoginComponent {
         sessionStorage.setItem('mqttBasicTopic', _basetopic);
       }
     }
+  }
+
+  guestLogin(): void {
+    this.username = environment.guestUser.username;
+    this.password = environment.guestUser.password;
+    console.log("test")
+    this.onCloud();
   }
 }

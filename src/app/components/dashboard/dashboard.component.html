@@ -19,7 +19,7 @@
       class="col-xl-3 col-lg-4 col-sm-6 col-12 d-flex pb-3"
       *ngIf="device.controls.length > 0"
       [device]="device"
-      [isBridgeOnline]="isBridgeOnline">
+      [isBridgeOnline]="isBridgeOnline||isVirtualPage">
     </app-device>
   </ng-container>
 </div>

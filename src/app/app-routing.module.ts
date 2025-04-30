@@ -32,6 +32,10 @@ const routes: Routes = [
         component: GroupsPageComponent,
       },
       {
+        path: 'virtual',
+        component: DashboardComponent,
+      },
+      {
         path: 'groups/:groupId',
         component: DashboardComponent,
       },

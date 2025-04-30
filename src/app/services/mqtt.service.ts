@@ -45,7 +45,6 @@ export class MqttService {
     const localBasicTopic = sessionStorage.getItem('mqttBasicTopic');
 
     if(localBroker&&localBasicTopic){
-      console.log("local");
       this.mqttUrl=localBroker;
       this.baseTopic=localBasicTopic;
     }

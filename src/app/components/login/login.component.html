@@ -41,6 +41,13 @@
                                 type="submit" [disabled]="!username || !password">
                                 Login
                             </button>
+                        </div>                                       
+                        <div class="mb-3">
+                            <button class="btn d-block w-100 btn-secondary" 
+                                type="button" 
+                                (click)="guestLogin()">
+                                Login as Guest
+                            </button>
                         </div>
                     </form>
                     <form *ngIf="isLocal" class="text-center needs-validation" (ngSubmit)="onLocal()" novalidate>
