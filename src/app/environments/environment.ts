@@ -565,6 +565,21 @@ export const environment = {
         }
       ],
       "type": "light"
-    }
+    },
+    {
+      "friendly_name": "Text",
+      "ieee": "0vtext",
+      "controls": [
+          {
+              "access": 7,
+              "description": "On/off state of the switch",
+              "label": "State",
+              "name": "state",
+              "property": "state",
+              "type": "Text"
+          }
+      ],
+      "type": "switch"
+  },
   ]
 }
