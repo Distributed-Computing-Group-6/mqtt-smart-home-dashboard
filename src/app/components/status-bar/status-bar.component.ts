@@ -15,6 +15,7 @@ export class StatusBarComponent implements OnInit {
   constructor(private mqttService: MqttService,private router: Router){}
 
   ngOnInit(): void {
+    this.checkState();
     if(this.router.url!=='/virtual'){
       this.isVirtual = true;
     } else {
