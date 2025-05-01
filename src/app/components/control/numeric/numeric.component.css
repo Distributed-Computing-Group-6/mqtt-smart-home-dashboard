@@ -1,7 +1,15 @@
 .label-spacing {
     margin-right: 10px;
   }
+  .slider-container {
+    max-width: 100%;  /* Ensures the slider does not exceed its container */
+    overflow-x: hidden;  /* Prevents horizontal overflow */
+    padding-right: 10px;  /* Adds some spacing to avoid edge overlap */
+  }
 
+  .slider-container input[type="range"] {
+      width: 100%;  /* Makes the slider take the full width of the container */
+  }
   .gradient-slider-container {
     position: relative;
     width: 100%;
