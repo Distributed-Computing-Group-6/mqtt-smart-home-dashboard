@@ -1,6 +1,7 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { ActivatedRoute } from '@angular/router';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,10 +9,15 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
   public devices:any;
   public id!:string|null;
   public groupName!:string;
   public isBridgeOnline: boolean = false;
+  modalTitle = '';
+  modalAction = '';
+  modalType = '';
+  modalName = '';
 
   constructor(private mqttService: MqttService,private route: ActivatedRoute){}
 
@@ -161,10 +167,18 @@ export class DashboardComponent implements OnInit {
     this.devices;
   }
   openDeleteModal() {
-  throw new Error('Method not implemented.');
+    this.modalTitle = 'Delete ' + this.groupName;
+    this.modalAction = 'delete';
+    this.modalName = this.groupName;
+    this.modalType = 'group';
+    this.modalComponent.openModal();
   }
-  openRenameModal() {
-  throw new Error('Method not implemented.');
+  openRenameModal() {    
+    this.modalTitle = 'Rename ' + this.groupName;
+    this.modalAction = 'edit';
+    this.modalName = this.groupName;
+    this.modalType = 'group';
+    this.modalComponent.openModal(); 
   }
 }
 

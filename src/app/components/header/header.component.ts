@@ -8,9 +8,24 @@ import { ModalComponent } from '../modal/modal.component';
 })
 export class HeaderComponent {
   @ViewChild(ModalComponent) modalComponent!: ModalComponent;
+  modalTitle = '';
+  modalAction = '';
+  modalType = '';
+  modalName = '';
 
-  openModal() {
+  openAddGroupModal() {
+    this.modalTitle = 'Add Group';
+    this.modalAction = 'add-group';
+    this.modalType = 'group';
+    this.modalName = '';
     this.modalComponent.openModal();
   }
-
+  
+  openAddDeviceModal() {
+    this.modalTitle = 'Add Device';
+    this.modalAction = 'add-device';
+    this.modalType = 'device';
+    this.modalName = '';
+    this.modalComponent.openModal();
+  }
 }

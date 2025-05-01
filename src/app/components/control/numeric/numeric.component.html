@@ -35,13 +35,18 @@
         </div>
         <!-- Slider -->
         <div class="slider-container d-flex align-items-center flex-shrink-0 ms-3">
-            <label for="slider" class="label-spacing">{{ inputValue }}  </label>
+            <label for="slider" class="label-spacing"> <strong>{{
+              inputValue !== undefined && inputValue !== null
+                ? inputValue
+                : (minValue + maxValue) / 2 || 'NA'
+            }}</strong> {{ control.unit || '' }}  </label>
             <span [ngClass]="{'temp_gradient':control.unit=='mired'}">
                 <input type="range" id="slider"
                    [(ngModel)]="inputValue" 
                    (change)="stateChange()"
                    [min]="minValue" [max]="maxValue" step="1"
-                   [disabled]="!canWrite()">
+                   [disabled]="!canWrite()"
+                   [ngClass]="{'transparent-slider': control.unit === 'mired'}">
             </span>
         </div>
     </div>

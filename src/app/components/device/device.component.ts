@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Inject, Input, Output, OnInit, TemplateRef, ViewChild, EventEmitter} from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { ModalComponent } from '../modal/modal.component';
 
@@ -8,13 +8,16 @@ import { ModalComponent } from '../modal/modal.component';
   styleUrl: './device.component.css'
 })
 export class DeviceComponent implements OnInit {
-  @ViewChild('renameModalContent') renameModalContent!: ModalComponent;
-  @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
   @Input() device!: any;
   @Input() isCard: boolean = true;
   @Input() isBridgeOnline: boolean = false;
   isDeviceOnline: boolean = true;
   invalidMessage!: string;
+  modalTitle = '';
+  modalAction = '';
+  modalType = '';
+  modalName = '';
 
   constructor(public mqttService: MqttService) {}
 
@@ -30,10 +33,34 @@ export class DeviceComponent implements OnInit {
   }
 
   openRenameModal() {
-    this.renameModalContent.openModal();
-  }  
-  
+    this.modalTitle = 'Rename Device';
+    this.modalAction = 'edit';
+    this.modalName = this.device.friendly_name;
+    this.modalType = 'device';
+    this.modalComponent.openModal(); 
+  }
+
   openDeleteModal() {
-    this.deleteModalContent.openModal();
+    this.modalTitle = 'Delete Device';
+    this.modalAction = 'delete';
+    this.modalName = this.device.friendly_name;
+    this.modalType = 'device';
+    this.modalComponent.openModal();
+  }
+
+  onAddToGroupClick() {
+    this.modalTitle = 'Add Group';
+    this.modalAction = 'addToGroup';
+    this.modalType = 'group';
+    this.modalName = this.device.friendly_name;
+    this.modalComponent.openModal()
+  }
+  
+  onRemoveFromGroupClick() {
+    this.modalTitle = 'Remove From Group';
+    this.modalAction = 'removeFromGroup';
+    this.modalType = 'group';
+    this.modalName = this.device.friendly_name;
+    this.modalComponent.openModal()
   }
 }
