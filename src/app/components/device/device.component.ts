@@ -28,7 +28,7 @@ export class DeviceComponent implements OnInit {
   checkState(){
     const availability = `${this.mqttService.getBaseTopic()}/${this.device.friendly_name}/availability`;
     this.mqttService.checkDeviceState(availability,this.device.friendly_name).subscribe(deviceStates => {
-        this.isDeviceOnline = !!deviceStates.get(this.device.friendly_name);
+        this.isDeviceOnline = !!deviceStates.get(this.device.friendly_name)||this.isBridgeOnline;
     });
   }
 
