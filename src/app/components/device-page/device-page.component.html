@@ -25,6 +25,10 @@
           <app-enum [friendly_name]="device.friendly_name" [control]="control"></app-enum>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'text'">
+      <app-text [friendly_name]="device.friendly_name" [control]="control"></app-text>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'composite'">
       <ng-container *ngIf="control.name == 'color_xy'; else elseTemplate">
         <app-color [friendly_name]="device.friendly_name" [control]="control"></app-color>

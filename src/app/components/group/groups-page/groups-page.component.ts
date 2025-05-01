@@ -28,5 +28,5 @@ export class GroupsPageComponent {
     this.mqttService.getGroups().subscribe(groups => {
       this.groups = groups;
     });
-  }
+  } 
 }

@@ -16,6 +16,7 @@ export class ModalComponent {
   @Input() name!: string;
   @Input() type!: string;
   @Input() action!: string;
+  
   baseTopic!: string;
   invalidMessage!: string;
   isInvalid: boolean = false;
@@ -27,6 +28,8 @@ export class ModalComponent {
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
   oldName!: string;
+
+
 
   constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location) {}
 
@@ -44,6 +47,111 @@ export class ModalComponent {
       this.invalidMessage = isOnline ? "" : "The bridge is offline. Please check your connection.";
     });
   }
+
+  addGroup(groupName: string, groupId?: number) {
+    const baseTopic = this.mqttService.getBaseTopic();
+    const stateTopic: string = `${baseTopic}/bridge/request/group/add`;
+    const responseTopic: string = `${baseTopic}/bridge/response/group/add`;
+  
+    let payload: string | object;
+    if (groupId !== undefined && !isNaN(groupId)) {
+      payload = {
+        friendly_name: groupName.trim(),
+        id: groupId
+      };
+    } else {
+      payload = groupName.trim(); 
+    }
+  
+    console.log('Sending add group request:', payload);
+    this.mqttService.publish(stateTopic, JSON.stringify(payload));
+  
+    this.mqttService.getUpdate(responseTopic, "", (value) => {
+      if (value.error) {
+        console.log(value.error);
+        this.isInvalid = true;
+        this.invalidMessage = value.error;
+      } else {
+        console.log('Group added successfully:', value);
+        this.isInvalid = false;
+        this.closeModal();
+      }
+    });
+  }  
+
+  addDeviceToGroup(deviceName: string, groupName: string) {
+    const baseTopic = this.mqttService.getBaseTopic();
+    const stateTopic:string = `${baseTopic}/bridge/request/group/members/add`;
+    const responseTopic: string = `${baseTopic}/bridge/response/group/members/add`;
+    const payload = {
+      group: groupName,
+      device: deviceName
+    };
+  
+    console.log(`Adding ${deviceName} to group ${groupName}`);
+    this.mqttService.publish(stateTopic, JSON.stringify(payload));
+
+    this.mqttService.getUpdate(responseTopic, "", (value) => {
+      if (value.error) {
+        console.log(value.error);
+        this.isInvalid = true;
+        this.invalidMessage = value.error;
+      } else {
+        console.log(`${deviceName} added to ${groupName} successfully:`, value);
+        this.isInvalid = false;
+        this.closeModal();
+      }
+    });
+  }
+  
+  removeDeviceFromGroup(deviceName: string, groupName: string) {
+    const baseTopic = this.mqttService.getBaseTopic();
+    const stateTopic:string = `${baseTopic}/bridge/request/group/members/remove`;    
+    const responseTopic: string = `${baseTopic}/bridge/response/group/members/remove`;
+    const payload = {
+      group: groupName,
+      device: deviceName
+    };
+    
+    console.log(`Removing ${deviceName} from group ${groupName}`);
+    this.mqttService.publish(stateTopic, JSON.stringify(payload));    
+
+    this.mqttService.getUpdate(responseTopic, "", (value) => {
+      if (value.error) {
+        console.log(value.error);
+        this.isInvalid = true;
+        this.invalidMessage = value.error;
+      } else {
+        console.log(`${deviceName} removed from ${groupName} successfully:`, value);
+        this.isInvalid = false;
+        this.closeModal();
+      }
+    });
+  }
+  
+  removeDeviceFromAllGroups(deviceName: string) {
+    const baseTopic = this.mqttService.getBaseTopic();
+    const stateTopic:string = `${baseTopic}/bridge/request/group/members/remove_all`;    
+    const responseTopic: string = `${baseTopic}/bridge/response/group/members/remove_all`;
+    const payload = {
+      device: deviceName
+    };
+    
+    console.log(`Removing ${deviceName} from all groups`);
+    this.mqttService.publish(stateTopic, JSON.stringify(payload));
+
+    this.mqttService.getUpdate(responseTopic, "", (value) => {
+      if (value.error) {
+        console.log(value.error);
+        this.isInvalid = true;
+        this.invalidMessage = value.error;
+      } else {
+        console.log(`${deviceName} removed from all groups successfully:`, value);
+        this.isInvalid = false;
+        this.closeModal();
+      }
+    });    
+  }   
 
   addZigbee(){
     const baseTopic = this.mqttService.getBaseTopic();
@@ -173,7 +281,8 @@ export class ModalComponent {
   
   openModal() {    
     this.modalService.open(this.modalContent, { backdrop: 'static', keyboard: false });
-  }    
+  }
+  
 
   async closeModal() {
     this.resetModal();    
@@ -185,6 +294,3 @@ export class ModalComponent {
     this.modalService.dismissAll();
   }
 }
-
-
-
