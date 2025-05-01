@@ -1,0 +1,10 @@
+<div *ngIf="canPublish()">
+    <label>{{ control.label }}:</label>
+    <input
+    #textInput
+    type="text"
+    [value]="inputValue"
+    (input)="onInputChange(textInput.value)"
+    [readonly]="!canWrite()" />
+</div>
+  

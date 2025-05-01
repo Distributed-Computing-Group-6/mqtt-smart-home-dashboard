@@ -14,7 +14,12 @@
                   <a class="nav-link" [routerLink]="['/groups']" routerLinkActive="active">Groups</a>
               </li>
               <li class="nav-item p-3">
-                  <a class="btn btn-light btn-sm px-3" (click)="openModal()">
+                <a class="btn btn-light btn-sm px-3" (click)="openAddGroupModal()">
+                  <i class="bi bi-plus-circle"></i> Add Group
+                </a>
+              </li>
+              <li class="nav-item p-3">
+                  <a class="btn btn-light btn-sm px-3" (click)="openAddDeviceModal()">
                     <i class="bi bi-plus-circle"></i> Add Device
                   </a>
               </li>
@@ -26,8 +31,10 @@
   </div>
 </nav>
 
-<app-modal 
-#modalComponent
-title="Add Device" 
-action="add">
+<app-modal
+  #modalComponent
+  [title]="modalTitle"
+  [action]="modalAction"
+  [type]="modalType"
+  [name]="modalName">
 </app-modal>

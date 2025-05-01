@@ -23,6 +23,7 @@ import { GroupCardComponent } from './components/group/group-card/group-card.com
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from './components/modal/modal.component';
 import { StatusBarComponent } from './components/status-bar/status-bar.component';
+import { TextComponent } from './components/control/text/text.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { StatusBarComponent } from './components/status-bar/status-bar.component
     GroupsPageComponent,
     GroupCardComponent,
     ModalComponent,
-    StatusBarComponent
+    StatusBarComponent,
+    TextComponent
   ],
   imports: [
     BrowserModule,

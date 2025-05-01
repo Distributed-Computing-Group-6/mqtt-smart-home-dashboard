@@ -13,11 +13,12 @@
         <a [routerLink]="['/device', device.ieee]" class="text-decoration-none text-dark">
           {{ device.friendly_name }}
         </a>
-      </h4>
-      
-      <div *ngIf="!isCard" class="btn-group btn-group-sm">
+      </h4>      
+      <div *ngIf="isCard" class="btn-group btn-group-sm">        
+        <button class="btn btn-success" (click)="onAddToGroupClick()"><i class="bi bi-plus-circle"></i></button>
         <button class="btn btn-secondary" (click)="openRenameModal()"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-danger" (click)="openDeleteModal()"><i class="bi bi-trash3"></i></button>
+        <button class="btn btn-warning" (click)="onRemoveFromGroupClick()"><i class="bi bi-trash3"></i></button>
       </div>
     </div>
   </div>
@@ -60,18 +61,11 @@
     </div>
   </div>
 
-<app-modal 
-  #renameModalContent
-  [title]="'Rename ' + device.friendly_name" 
-  action="edit"
-  type="device"
-  [name]="device.friendly_name">
-</app-modal>
 
-<app-modal 
-  #deleteModalContent
-  [title]="'Delete ' + device.friendly_name" 
-  action="delete"
-  type="device"
-  [name]="device.friendly_name">
+<app-modal
+  #modalComponent
+  [title]="modalTitle"
+  [action]="modalAction"
+  [type]="modalType"
+  [name]="modalName">
 </app-modal>

@@ -11,12 +11,13 @@ declare var $: any;
 })
 export class GroupCardComponent {
   @ViewChild('renameModalContent') renameModalContent!: ModalComponent;
-  @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;
+  @ViewChild('deleteModalContent') deleteModalContent!: ModalComponent;  
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
   @Input() group!: any;
   @Input() isBridgeOnline: boolean = false;
   topic!: string;
   isEdit: boolean = true;
-  
+
   constructor(public mqttService: MqttService) {}
 
   ngOnInit() {
@@ -29,6 +30,5 @@ export class GroupCardComponent {
   
   openDeleteModal() {
     this.deleteModalContent.openModal();
-  }
-  
+  }  
 }

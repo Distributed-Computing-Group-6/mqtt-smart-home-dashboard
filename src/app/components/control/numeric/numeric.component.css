@@ -5,7 +5,32 @@
   .gradient-slider-container {
     position: relative;
     width: 100%;
-    height: 50px;  /* Adjust as necessary */
+    height: 50px; 
+  }
+
+  .transparent-slider {
+    background: transparent;    
+    -webkit-appearance: none; 
+  }
+  .transparent-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7); /* Light fill */
+    border: 2px solid rgb(0, 0, 0); /* Black outline */
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .transparent-slider::-webkit-slider-runnable-track {
+    background: transparent;
+  }
+  .transparent-slider::-moz-range-track {
+    background: transparent;
+  }
+  .transparent-slider::-moz-range-thumb {
+    background-color: rgba(255, 255, 255, 0.7);
   }
 
   .temp_gradient {
