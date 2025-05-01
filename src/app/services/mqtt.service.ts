@@ -47,8 +47,10 @@ export class MqttService {
     if(localBroker&&localBasicTopic){
       this.mqttUrl=localBroker;
       this.baseTopic=localBasicTopic;
+    } else if(credentials!=null) {
+      this.setCloudBroker(credentials.username);
     } else {
-      this.setCloudBroker(credentials!.username);
+      this.logout();
     }
 
     if (credentials) {

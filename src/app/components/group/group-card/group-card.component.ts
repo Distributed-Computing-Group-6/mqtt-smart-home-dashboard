@@ -16,7 +16,6 @@ export class GroupCardComponent {
   @Input() group!: any;
   @Input() isBridgeOnline: boolean = false;
   topic!: string;
-  isEdit: boolean = true;
 
   constructor(public mqttService: MqttService) {}
 
