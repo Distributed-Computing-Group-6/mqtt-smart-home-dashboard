@@ -10,7 +10,6 @@ import { filter } from 'rxjs/operators';
 })
 export class StatusBarComponent implements OnInit {
   isBridgeOnline: boolean = false;
-  isVirtual: boolean= false;
 
   constructor(private mqttService: MqttService,private router: Router){}
 
@@ -29,9 +28,10 @@ export class StatusBarComponent implements OnInit {
         const navEnd = event as NavigationEnd;
         console.log(navEnd.url);
         if (navEnd.url === '/virtual' || navEnd.url.startsWith('/device/0v')) {
-          this.isVirtual = true;
+          this.isBridgeOnline = true;
+          this.mqttService.unsubscribe(`${this.mqttService.getBaseTopic()}/bridge/state`);
         } else { 
-          this.isVirtual = false;
+          this.checkState();
         }
       });
   }
