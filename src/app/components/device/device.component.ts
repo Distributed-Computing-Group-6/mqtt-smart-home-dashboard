@@ -47,20 +47,4 @@ export class DeviceComponent implements OnInit {
     this.modalType = 'device';
     this.modalComponent.openModal();
   }
-
-  onAddToGroupClick() {
-    this.modalTitle = 'Add Group';
-    this.modalAction = 'addToGroup';
-    this.modalType = 'group';
-    this.modalName = this.device.friendly_name;
-    this.modalComponent.openModal()
-  }
-  
-  onRemoveFromGroupClick() {
-    this.modalTitle = 'Remove From Group';
-    this.modalAction = 'removeFromGroup';
-    this.modalType = 'group';
-    this.modalName = this.device.friendly_name;
-    this.modalComponent.openModal()
-  }
 }

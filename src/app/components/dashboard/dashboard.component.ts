@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit {
   modalAction = '';
   modalType = '';
   modalName = '';
+  allDevices: any;
 
   constructor(private mqttService: MqttService,private route: ActivatedRoute){}
 
@@ -59,6 +60,8 @@ export class DashboardComponent implements OnInit {
     this.mqttService.getDevices().subscribe(devices => {
       if(this.id==null){
         this.setDevices(devices);
+      } else {
+        this.allDevices = devices;
       }
     });
   }
@@ -84,6 +87,22 @@ export class DashboardComponent implements OnInit {
     this.modalName = this.groupName;
     this.modalType = 'group';
     this.modalComponent.openModal(); 
+  }
+  
+  onAddToGroupClick() {
+    this.modalTitle = `Add Device to ${this.groupName}`;
+    this.modalAction = 'addToGroup';
+    this.modalType = 'group';
+    this.modalName = this.groupName;
+    this.modalComponent.openModal()
+  }
+  
+  onRemoveFromGroupClick() {
+    this.modalTitle = `Remove From ${this.groupName}`;
+    this.modalAction = 'removeFromGroup';
+    this.modalType = 'group';
+    this.modalName = this.groupName;
+    this.modalComponent.openModal()
   }
 }
 

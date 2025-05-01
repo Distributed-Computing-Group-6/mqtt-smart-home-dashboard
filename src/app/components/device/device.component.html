@@ -14,11 +14,9 @@
           {{ device.friendly_name }}
         </a>
       </h4>      
-      <div *ngIf="isCard" class="btn-group btn-group-sm">        
-        <button class="btn btn-success" (click)="onAddToGroupClick()"><i class="bi bi-plus-circle"></i></button>
+      <div *ngIf="!isCard&&!device.ieee.startsWith('0v')" class="btn-group btn-group-sm">        
         <button class="btn btn-secondary" (click)="openRenameModal()"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-danger" (click)="openDeleteModal()"><i class="bi bi-trash3"></i></button>
-        <button class="btn btn-warning" (click)="onRemoveFromGroupClick()"><i class="bi bi-trash3"></i></button>
       </div>
     </div>
   </div>
@@ -38,6 +36,10 @@
 
         <ng-container *ngSwitchCase="'enum'">
               <app-enum [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-enum>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'text'">
+              <app-text [friendly_name]="device.friendly_name" [control]="control" [isCard]="isCard"></app-text>
         </ng-container>
 
         <ng-container *ngSwitchCase="'composite'">

@@ -79,7 +79,6 @@
         </button>
       </div>
       </ng-container>
-      <!-- <ng-container *ngTemplateOutlet="bodyTemplate"></ng-container> -->
 
 
       <!-- Add Group Modal -->
@@ -118,67 +117,72 @@
 
       <!-- Remove from Group Modal -->
       <ng-container *ngSwitchCase="'removeFromGroup'">
-        <div *ngIf="cantRemove" class="modal-body d-flex align-items-center is-invalid">
-          <i class="bi bi-x-circle me-2 text-danger"></i>
-          <span class="text-danger">{{ invalidMessage }}</span>
-        </div>
         <div *ngIf="deleting" class="modal-body d-flex align-items-center">
           <span class="me-2">🗑️ Deleting...</span>
           <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
         </div>
 
-        <form #groupForm="ngForm" (ngSubmit)="removeDeviceFromGroup(deviceNameInput.value, groupNameInput.value)">
-          <div class="mb-3">
-            <label for="groupName" class="form-label">Group Name</label>
-            <input 
-              type="text"
-              id="groupName"
-              class="form-control"
-              #groupNameInput
-              required              
-              [ngClass]="{ 'is-invalid': isInvalid }" />
-            <label for="deviceName" class="form-label">Device Name</label>
-            <input 
-              type="text"
-              id="deviceName"
-              class="form-control"
-              #deviceNameInput
-              required              
-              placeholder="{{ name }}"
-              [ngClass]="{ 'is-invalid': isInvalid }" />
-            <div *ngIf="isInvalid" class="invalid-feedback">
-              {{ invalidMessage }}
-            </div>
-          </div>              
+        <div class="modal-body">
+          <form #groupForm="ngForm" (ngSubmit)="removeDeviceFromGroup(deviceNameInput.value, name)">
+            <div class="mb-3">
+              <div class="form-group">
+                <label for="deviceName" class="form-label">Device Name</label>
+                  <select
+                    id="deviceName"
+                    class="form-control"
+                    [(ngModel)]="deviceNameInput"
+                    name="deviceName"
+                    #deviceNameInput="ngModel"
+                    required
+                    [ngClass]="{ 'is-invalid': deviceNameInput.invalid && deviceNameInput.touched }">
+                    <option *ngFor="let device of members" [value]="device.friendly_name">
+                      {{ device.friendly_name }}
+                    </option>
+                  </select>
+                </div>
+              <div *ngIf="isInvalid" class="invalid-feedback">
+                {{ invalidMessage }}
+              </div>
+            </div>        
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-            <button type="submit" (click)="removeDeviceFromGroup(name, groupNameInput.value)" [disabled]="!isBridgeOnline" class="btn btn-danger">
-              {{ !cantRemove ? "Confirm Delete" : "Force Delete" }}
+            <button type="submit" [disabled]="!isBridgeOnline" class="btn btn-danger">
+              {{ !cantRemove ? "Confirm Remove" : "Force Remove" }}
             </button>
           </div>
-        </form>
+        </form>     
+      </div> 
       </ng-container>
 
       <ng-container *ngSwitchCase="'addToGroup'">
-        <form #groupForm="ngForm" (ngSubmit)="addDeviceToGroup(name, groupNameInput.value)">
-          <div class="mb-3">
-            <label for="groupName" class="form-label">Group Name</label>
-            <input 
-              type="text"
-              id="groupName"
-              class="form-control"
-              #groupNameInput
-              required
-              [ngClass]="{ 'is-invalid': isInvalid }" />
-            <div *ngIf="isInvalid" class="invalid-feedback">
-              {{ invalidMessage }}
+        <div class="modal-body">
+          <form #groupForm="ngForm" (ngSubmit)="addDeviceToGroup(groupNameInput.value, name)">
+            <div class="mb-3">
+              <div class="form-group">
+                <label for="deviceName" class="form-label">Device Name</label>
+                <select
+                  id="deviceName"
+                  class="form-control"
+                  [(ngModel)]="groupNameInput"
+                  name="deviceName"
+                  #groupNameInput="ngModel"
+                  required
+                  [ngClass]="{ 'is-invalid': groupNameInput.invalid && groupNameInput.touched }">
+                  <option *ngFor="let device of devices" [value]="device.friendly_name">
+                    {{ device.friendly_name }}
+                  </option>
+                </select>
+              </div>              
+              <div *ngIf="isInvalid" class="invalid-feedback">
+                {{ invalidMessage }}
+              </div>
+            </div>        
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>        
+              <button type="submit" class="btn btn-primary" [disabled]="!isBridgeOnline">Add to Group</button>
             </div>
-          </div>        
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>        
-            <button type="submit" class="btn btn-primary">Add to Group</button>
-          </div>
-        </form>
+          </form>
+        </div>
       </ng-container>
     </ng-container>
 </ng-template>

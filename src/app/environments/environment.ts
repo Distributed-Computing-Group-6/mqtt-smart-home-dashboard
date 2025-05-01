@@ -565,5 +565,19 @@ export const environment = {
         }
       ],
       "type": "light"
+    },
+    {
+      "friendly_name": "Text",
+      "ieee": "0vText",
+      "controls": [
+        {
+          "access": 7,
+          "label": "Text",
+          "name": "text",
+          "property": "text",
+          "type": "text"
+        }
+      ]
     }
+    ]
 }

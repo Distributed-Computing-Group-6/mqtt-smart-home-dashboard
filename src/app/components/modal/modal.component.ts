@@ -16,6 +16,8 @@ export class ModalComponent {
   @Input() name!: string;
   @Input() type!: string;
   @Input() action!: string;
+  @Input() devices!: any;
+  @Input() members!: any;
   
   baseTopic!: string;
   invalidMessage!: string;

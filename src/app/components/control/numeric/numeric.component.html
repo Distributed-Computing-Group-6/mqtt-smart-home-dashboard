@@ -39,7 +39,7 @@
               inputValue !== undefined && inputValue !== null
                 ? inputValue
                 : (minValue + maxValue) / 2 || 'NA'
-            }}</strong> {{ control.unit || '' }}  </label>
+            }}</strong> {{  (control.unit !== 'mired' ? control.unit : '') || '' }}  </label>
             <span [ngClass]="{'temp_gradient':control.unit=='mired'}">
                 <input type="range" id="slider"
                    [(ngModel)]="inputValue" 
