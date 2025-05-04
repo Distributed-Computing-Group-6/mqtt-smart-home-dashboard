@@ -189,17 +189,19 @@ export class MqttService {
           return {
             friendly_name: group.friendly_name,
             id: group.id,
-            members: group.members || [],
+            memberAddresses: (group.members || []).map((m: any) => m.ieee_address),
+            members: [] as any[],
             scenes: group.scenes || [],
           };
         });
       }),
       switchMap(groups => {
         return this.getDevices().pipe(
-          map(devices => {groups.forEach(group => {
-              group.members = devices.filter(device => {
-                return group.members.some((member: { ieee_address: string }) => member.ieee_address === device.ieee);
-              });
+          map(devices => {
+            groups.forEach(group => {
+              group.members = devices.filter(device =>
+                group.memberAddresses.includes(device.ieee)
+              );
             });
             return groups;
           })
@@ -207,6 +209,7 @@ export class MqttService {
       })
     );
   }
+  
   
     
   public getBaseTopic():string {

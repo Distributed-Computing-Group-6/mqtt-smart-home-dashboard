@@ -123,7 +123,7 @@
         </div>
 
         <div class="modal-body">
-          <form #groupForm="ngForm" (ngSubmit)="removeDeviceFromGroup(deviceNameInput.value, name)">
+          <form #groupForm="ngForm" (ngSubmit)="removeDeviceFromGroup(deviceNameInput, name)">
             <div class="mb-3">
               <div class="form-group">
                 <label for="deviceName" class="form-label">Device Name</label>
@@ -132,10 +132,13 @@
                     class="form-control"
                     [(ngModel)]="deviceNameInput"
                     name="deviceName"
-                    #deviceNameInput="ngModel"
+                    #deviceRemoveModel="ngModel"
                     required
-                    [ngClass]="{ 'is-invalid': deviceNameInput.invalid && deviceNameInput.touched }">
-                    <option *ngFor="let device of members" [value]="device.friendly_name">
+                    [ngClass]="{ 'is-invalid': deviceRemoveModel.invalid && deviceRemoveModel.touched }">
+                  
+                    <option [ngValue]="''" disabled>Select a device</option>
+                  
+                    <option *ngFor="let device of members" [ngValue]="device.friendly_name">
                       {{ device.friendly_name }}
                     </option>
                   </select>
@@ -146,7 +149,7 @@
             </div>        
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-            <button type="submit" [disabled]="!isBridgeOnline" class="btn btn-danger">
+            <button type="submit" [disabled]="!isBridgeOnline||deviceNameInput==''" class="btn btn-danger">
               {{ !cantRemove ? "Confirm Remove" : "Force Remove" }}
             </button>
           </div>
@@ -156,19 +159,22 @@
 
       <ng-container *ngSwitchCase="'addToGroup'">
         <div class="modal-body">
-          <form #groupForm="ngForm" (ngSubmit)="addDeviceToGroup(groupNameInput.value, name)">
+          <form #groupForm="ngForm" (ngSubmit)="addDeviceToGroup(deviceNameInput, name)">
             <div class="mb-3">
               <div class="form-group">
                 <label for="deviceName" class="form-label">Device Name</label>
                 <select
                   id="deviceName"
                   class="form-control"
-                  [(ngModel)]="groupNameInput"
+                  [(ngModel)]="deviceNameInput"
                   name="deviceName"
-                  #groupNameInput="ngModel"
+                  #deviceAddModel="ngModel"
                   required
-                  [ngClass]="{ 'is-invalid': groupNameInput.invalid && groupNameInput.touched }">
-                  <option *ngFor="let device of devices" [value]="device.friendly_name">
+                  [ngClass]="{ 'is-invalid': deviceAddModel.invalid && deviceAddModel.touched }">
+                
+                  <option [ngValue]="''" disabled>Select a device</option>
+                
+                  <option *ngFor="let device of members" [ngValue]="device.friendly_name">
                     {{ device.friendly_name }}
                   </option>
                 </select>
@@ -179,7 +185,7 @@
             </div>        
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>        
-              <button type="submit" class="btn btn-primary" [disabled]="!isBridgeOnline">Add to Group</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!isBridgeOnline||deviceNameInput==''">Add to Group</button>
             </div>
           </form>
         </div>

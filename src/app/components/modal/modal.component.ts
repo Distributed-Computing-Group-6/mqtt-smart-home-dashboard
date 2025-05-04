@@ -3,6 +3,7 @@ import { MqttService } from '../../services/mqtt.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal',
@@ -18,6 +19,7 @@ export class ModalComponent {
   @Input() action!: string;
   @Input() devices!: any;
   @Input() members!: any;
+  @Output() onMemberChange = new EventEmitter<void>();
   
   baseTopic!: string;
   invalidMessage!: string;
@@ -30,10 +32,11 @@ export class ModalComponent {
   joinedDevices: { friendly_name: string; ieee_address: string }[] = [];
   countdown!: number;
   oldName!: string;
+  deviceNameInput:string = "";
 
 
 
-  constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location) {}
+  constructor(public mqttService: MqttService, private modalService: NgbModal,private location: Location, private router: Router) {}
 
   ngOnInit() {
     this.baseTopic =`${this.mqttService.getBaseTopic()}`;
@@ -101,6 +104,7 @@ export class ModalComponent {
       } else {
         console.log(`${deviceName} added to ${groupName} successfully:`, value);
         this.isInvalid = false;
+        this.onDataChange();
         this.closeModal();
       }
     });
@@ -126,6 +130,7 @@ export class ModalComponent {
       } else {
         console.log(`${deviceName} removed from ${groupName} successfully:`, value);
         this.isInvalid = false;
+        this.onDataChange();
         this.closeModal();
       }
     });
@@ -249,6 +254,8 @@ export class ModalComponent {
         this.unsubscribe(oldName);
         if(this.type=="device"){
           this.location.back();
+        } else {
+          this.router.navigate(['/groups']);
         }
       }
       this.deleting=false;
@@ -264,6 +271,7 @@ export class ModalComponent {
     this.cantRemove = false;
     this.deleting=false;
     this.invalidMessage = "";
+    this.deviceNameInput = ""
     if(this.joiningCountdown>0){
       this.cancelJoin();
     }
@@ -284,7 +292,6 @@ export class ModalComponent {
   openModal() {    
     this.modalService.open(this.modalContent, { backdrop: 'static', keyboard: false });
   }
-  
 
   async closeModal() {
     this.resetModal();    
@@ -294,5 +301,9 @@ export class ModalComponent {
       this.mqttService.unsubscribe(`${this.baseTopic}/bridge/response/${this.type}/remove`)
     ]);
     this.modalService.dismissAll();
+  } 
+
+  onDataChange() {
+    this.onMemberChange.emit();
   }
 }

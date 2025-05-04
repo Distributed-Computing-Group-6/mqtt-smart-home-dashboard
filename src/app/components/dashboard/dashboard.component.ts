@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import { MqttService } from '../../services/mqtt.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -94,7 +94,8 @@ export class DashboardComponent implements OnInit {
     this.modalAction = 'addToGroup';
     this.modalType = 'group';
     this.modalName = this.groupName;
-    this.modalComponent.openModal()
+    this.modalComponent.openModal();
+    this.getCards();
   }
   
   onRemoveFromGroupClick() {
@@ -102,7 +103,15 @@ export class DashboardComponent implements OnInit {
     this.modalAction = 'removeFromGroup';
     this.modalType = 'group';
     this.modalName = this.groupName;
-    this.modalComponent.openModal()
+    this.modalComponent.openModal();
+    this.getCards();
+  }
+
+  onDataChange() {
+    if(this.id!=null){
+      console.log('Modal closed, refreshing cards...');
+      this.getCards();
+    }
   }
 }
 

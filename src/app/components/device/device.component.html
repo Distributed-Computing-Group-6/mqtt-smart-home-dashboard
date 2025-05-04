@@ -14,7 +14,8 @@
           {{ device.friendly_name }}
         </a>
       </h4>      
-      <div *ngIf="!isCard&&!device.ieee.startsWith('0v')" class="btn-group btn-group-sm">        
+      <div *ngIf="!isCard" class="btn-group btn-group-sm"
+      [ngStyle]="{ visibility: device.ieee.startsWith('0v') ? 'hidden' : 'visible' }">       
         <button class="btn btn-secondary" (click)="openRenameModal()" title="Rename Device"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-danger" (click)="openDeleteModal()" title="Delete Device"><i class="bi bi-trash3"></i></button>
       </div>

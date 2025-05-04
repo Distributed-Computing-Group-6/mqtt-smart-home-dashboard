@@ -47,8 +47,9 @@
   </ng-container>
 </div>
 
-<app-modal
+<app-modal 
   #modalComponent
+  (onMemberChange)="onDataChange()"
   [title]="modalTitle"
   [action]="modalAction"
   [type]="modalType"
