@@ -174,7 +174,7 @@
                 
                   <option [ngValue]="''" disabled>Select a device</option>
                 
-                  <option *ngFor="let device of members" [ngValue]="device.friendly_name">
+                  <option *ngFor="let device of devices" [ngValue]="device.friendly_name">
                     {{ device.friendly_name }}
                   </option>
                 </select>
