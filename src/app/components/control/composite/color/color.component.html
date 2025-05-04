@@ -1,9 +1,0 @@
-<app-basic-expose [control]="control">
-    <input 
-      type="color" 
-      class="form-control form-control-color"
-      [id]="topic + 'ColorSwitch'"
-      [(ngModel)]="inputValue"
-      (change)="stateChange()"
-      [disabled]="(!canWrite())">
-</app-basic-expose>
